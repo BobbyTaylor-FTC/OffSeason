@@ -91,7 +91,7 @@ public class TeleopTester extends LinearOpMode
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
                         liftLocation++;
-                        telemetry.addData("Lift set ", 1);
+                        telemetry.addData("Going up", "");
 
                     }
                     shouldLiftMove = true;
@@ -99,34 +99,49 @@ public class TeleopTester extends LinearOpMode
                 else if(gamepad2.dpad_down){
                     if(liftLocation>0){ //makes sure that the lift cannot get into a negative position which would likely break the lift
                         liftLocation--;
-                        telemetry.addData("Lift set ", 2);
+                        telemetry.addData("Going down", "");
                     }
                     shouldLiftMove = true;
                 }
                 else if(gamepad2.dpad_right){
                     liftLocation = ellie.maxHeight; //replace with max lift position
                     shouldLiftMove = true;
-                    telemetry.addData("Lift set ", 3);
+                    telemetry.addData("Max height", "");
                 }
                 else if(gamepad2.dpad_left){
                     liftLocation = 0; //min lift position
                     shouldLiftMove = true;
-                    telemetry.addData("Lift set 4 ", 4);
+                    telemetry.addData("Min height", "");
                 }
 
 
 
-                if(gamepad2.left_stick_y>.3||gamepad2.left_stick_y<-.3){
+                if(gamepad2.left_stick_y!=0){
                     if((ellie.maxHeight*ellie.ticksPerHeight>(leftLift.getCurrentPosition()+20))&&leftLift.getCurrentPosition()-20>0){
                         ellie.setLiftPower(gamepad2.left_stick_y);
-                        telemetry.addData("Lift set ", 5);
                     }
+
+                    if((ellie.maxHeight*ellie.ticksPerHeight>leftLift.getCurrentPosition()+50)&&(0<leftLift.getCurrentPosition()+30)) {
+                        ellie.setLiftPower(gamepad1.left_stick_y);
+                    }
+                    else if(ellie.maxHeight*ellie.ticksPerHeight>leftLift.getCurrentPosition()+50){
+                        if(gamepad2.left_stick_y>0){
+                            ellie.setLiftPower(gamepad2.left_stick_y);
+                        }
+                    }
+                    else if(0<leftLift.getCurrentPosition()+30){
+                        if(gamepad2.left_stick_y<0){
+                            ellie.setLiftPower(gamepad2.left_stick_y);
+                        }
+                    }
+                telemetry.addData("Custom movement", gamepad2.left_stick_y);
                 shouldLiftMove = false;
                 }
                 else if(shouldLiftMove){
                     ellie.liftMove(liftLocation);
                     telemetry.addData("Lift moving to", liftLocation);
                 }
+                telemetry.addData("Should the lift move?",shouldLiftMove);
 
 
 
@@ -148,7 +163,7 @@ public class TeleopTester extends LinearOpMode
 
 
                 //drive code
-                    vroom.driveT(.8);
+                    vroom.driveT(1);
                 /*
                                 if(gamepad2.b){
                     vroom.turn(90);
