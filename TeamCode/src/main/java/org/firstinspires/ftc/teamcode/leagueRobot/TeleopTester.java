@@ -112,7 +112,7 @@ public class TeleopTester extends LinearOpMode
                     shouldLiftMove = true;
                     telemetry.addData("Min height", "");
                 }
-//testing commit
+
 
 
                 if(gamepad2.left_stick_y!=0){
