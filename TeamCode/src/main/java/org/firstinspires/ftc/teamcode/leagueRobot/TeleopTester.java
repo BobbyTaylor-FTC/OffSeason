@@ -92,8 +92,6 @@ public class TeleopTester extends LinearOpMode
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
                         liftLocation++;
                         telemetry.addData("Going up", "");
-                        shouldLiftMove = true;
-
                     }
                     shouldLiftMove = true;
                 }
