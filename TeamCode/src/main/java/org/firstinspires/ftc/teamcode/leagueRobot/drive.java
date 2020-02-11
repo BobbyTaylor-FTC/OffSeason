@@ -40,7 +40,7 @@ public class drive
     public double kPstrafe = .03;
     public double kDstrafe = 0;
 
-    public double kPdrive = 0.3;
+    public double kPdrive = 0.1;
     public double kIdrive = 0;
     public double kDdrive = 0;
 
@@ -129,7 +129,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         setPowerY(-percentSpeed);
     }
 
-    /*
+
     public void driveX(double x, double speed, double time)
     {
         x = (int) x * COUNTS_PER_INCH;
@@ -200,7 +200,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
 
 
 
-     */
+    /*
     public void driveX(double x, double speed, double time)
     {
         x = (int) x * COUNTS_PER_INCH;
@@ -219,16 +219,26 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+this.opModeObj.telemetry.addData("pre PID loop","");
+this.opModeObj.telemetry.update();
         motortime.reset();
-        while ((frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())&&(motortime.seconds()<time))
+        setPowerX(1);
+        this.opModeObj.telemetry.addData("frontLeft is busy?",frontLeft.isBusy());
+        this.opModeObj.telemetry.addData("motortime",motortime.seconds());
+        this.opModeObj.telemetry.update();
+        while ((frontLeft.getPower()!=0||frontRight.getPower()!=0 || backLeft.getPower()!=0 || backRight.getPower()!=0)&&motortime.seconds()<time)
         {
+            frontLeft.getVelocity()
             PIDDrive(speed);
 
             this.opModeObj.telemetry.addData("Where I at fL", frontLeft.getCurrentPosition());
+            this.opModeObj.telemetry.addData("Power fL",frontLeft.getPower());
             this.opModeObj.telemetry.addData("Where I at fR", frontRight.getCurrentPosition());
+            this.opModeObj.telemetry.addData("Power fR",frontRight.getPower());
             this.opModeObj.telemetry.addData("Where I at bL", backLeft.getCurrentPosition());
+            this.opModeObj.telemetry.addData("Power bL",backLeft.getPower());
             this.opModeObj.telemetry.addData("Where I at bR", backRight.getCurrentPosition());
+            this.opModeObj.telemetry.addData("Power bR",backRight.getPower());
 
             this.opModeObj.telemetry.update();
         }
@@ -259,7 +269,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motortime.reset();
-        while ((frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())&&(motortime.seconds()<time))
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&motortime.seconds()<time)
         {
             PIDDrive(speed);
 
@@ -272,7 +282,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         }
 
     }
-
+*/
     public void gyroStrafeTele(double speed){ //check to see if this is the correct code
             nowtime = runtime.seconds();
             error = gyro.getAngle()-strafeHeading;
@@ -376,6 +386,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
             this.opModeObj.telemetry.update();
         }
     }
+
     public void delay(double time){
         ElapsedTime delaytime = new ElapsedTime();
         delaytime.reset();

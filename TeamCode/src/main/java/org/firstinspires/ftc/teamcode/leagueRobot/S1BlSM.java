@@ -58,13 +58,7 @@ public class S1BlSM extends LinearOpMode {
     public ColorSensor sensorColorFront = null;
     public ColorSensor sensorColorMiddle = null;
     private State mCurrentState; //Current State Machine State.
-    drive vroom = new drive(this,telemetry,hardwareMap);
-    color see = new color(this,telemetry,hardwareMap);
-    lift ellie = new lift(this,telemetry,hardwareMap);
-    revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-    found pull = new found(this,telemetry,hardwareMap);
-    grabber grabby = new grabber(this,telemetry,hardwareMap);
-    range scope = new range(this,telemetry,hardwareMap);
+
     public S1BlSM(){
 
     }
@@ -72,7 +66,13 @@ public class S1BlSM extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        drive vroom = new drive(this,telemetry,hardwareMap);
+        color see = new color(this,telemetry,hardwareMap);
+        lift ellie = new lift(this,telemetry,hardwareMap);
+        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
+        found pull = new found(this,telemetry,hardwareMap);
+        grabber grabby = new grabber(this,telemetry,hardwareMap);
+        range scope = new range(this,telemetry,hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -91,7 +91,6 @@ public class S1BlSM extends LinearOpMode {
         switch(mCurrentState){
             case STATE_INITIAL:
                 newState(State.STATE_DRIVE_TO_STONE);
-
                 break;
             case STATE_DRIVE_TO_STONE:
                 vroom.strafeToSkystone();

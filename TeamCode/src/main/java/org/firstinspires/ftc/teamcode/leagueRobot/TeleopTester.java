@@ -142,8 +142,6 @@ public class TeleopTester extends LinearOpMode
                 }
                 telemetry.addData("Should the lift move?",shouldLiftMove);
 
-
-
                 if(gamepad1.a){
                     pull.grabFound();
                 }
@@ -158,7 +156,6 @@ public class TeleopTester extends LinearOpMode
                 else {
                     grabby.releaseSkystone();
                 }
-
 
 
                 //drive code

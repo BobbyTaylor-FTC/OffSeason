@@ -61,7 +61,7 @@ public class WPark8IN extends LinearOpMode {
         drive vroom = new drive(this,telemetry,hardwareMap);
         color see = new color(this,telemetry,hardwareMap);
         lift ellie = new lift(this,telemetry,hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
+        //revIMU gyro = new revIMU(this,telemetry,hardwareMap);
         found pull = new found(this,telemetry,hardwareMap);
         grabber grabby = new grabber(this,telemetry,hardwareMap);
         range scope = new range(this,telemetry,hardwareMap);
@@ -77,15 +77,14 @@ public class WPark8IN extends LinearOpMode {
         //1: Look for an EVENT that wil cause a STATE change
         //2: If an EVENT is found, take any required ACTION, an then set the next STATE else
         //3: If no EVENT is found, do processing for the current STATE and send TELEMETRY data for STATE
-
-
+        vroom.driveX(70,1,10);
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
         switch(mCurrentState){
             case STATE_INITIAL:
                 newState(State.STATE_PARK);
                 break;
             case STATE_PARK:
-                vroom.driveX(8,1,2);
+                vroom.driveX(72,1,10);
                 break;
         }
 
