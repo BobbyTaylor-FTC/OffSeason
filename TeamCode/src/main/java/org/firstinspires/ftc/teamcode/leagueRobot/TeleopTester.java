@@ -66,7 +66,8 @@ public class TeleopTester extends LinearOpMode
         waitForStart();
 
         runtime.reset();
-
+boolean grabFound = false;
+boolean grabStone = false;
         drive vroom = new drive(this,telemetry,hardwareMap);
         color see = new color(this,telemetry,hardwareMap);
         lift ellie = new lift(this,telemetry,hardwareMap);
@@ -74,6 +75,7 @@ public class TeleopTester extends LinearOpMode
         found pull = new found(this,telemetry,hardwareMap);
         grabber grabby = new grabber(this,telemetry,hardwareMap);
         range scope = new range(this,telemetry,hardwareMap);
+        claw pince = new claw(this,telemetry,hardwareMap);
         leftLift = hardwareMap.get(DcMotor.class,"left_lift");
         rightLift = hardwareMap.get(DcMotor.class,"right_lift");
         leftLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -86,7 +88,7 @@ public class TeleopTester extends LinearOpMode
         while (opModeIsActive())
         {
 
-
+/*
 //lift code
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
@@ -141,15 +143,33 @@ public class TeleopTester extends LinearOpMode
                     telemetry.addData("Lift moving to", liftLocation);
                 }
                 telemetry.addData("Should the lift move?",shouldLiftMove);
+ */
+ellie.setLiftPower(.4*gamepad2.left_stick_y);
 
-                if(gamepad1.a){
-                    pull.grabFound();
-                }
-                if(!gamepad1.a){
-                    pull.releaseFound();
-                }
 
-                if(gamepad1.b){
+
+            if(gamepad1.b&&grabFound){
+                pull.releaseFound();
+                grabFound = false;
+            }
+            else{
+                pull.grabFound();
+                grabFound = true;
+                pull.grabFound();
+            }
+
+            if(gamepad1.y&&grabStone){
+                pince.release();
+                grabStone = false;
+            }
+            else{
+                grabStone = true;
+                pince.close();
+            }
+
+
+
+            if(gamepad1.b){
                     grabby.grabSkystone(0);
                     grabby.grabSkystone(1);
                 }
