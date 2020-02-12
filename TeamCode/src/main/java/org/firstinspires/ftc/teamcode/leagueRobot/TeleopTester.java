@@ -148,21 +148,20 @@ ellie.setLiftPower(.4*gamepad2.left_stick_y);
 
 
 
-            if(gamepad1.b&&grabFound){
+            if(gamepad1.a&&grabFound){
                 pull.releaseFound();
                 grabFound = false;
             }
-            else{
+            else if(gamepad1.a){
                 pull.grabFound();
                 grabFound = true;
-                pull.grabFound();
             }
 
             if(gamepad1.y&&grabStone){
                 pince.release();
                 grabStone = false;
             }
-            else{
+            else if(gamepad1.y){
                 grabStone = true;
                 pince.close();
             }
