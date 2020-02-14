@@ -38,7 +38,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
 Start with the front color sensor inline with the middle of the first stone
  */
-@Disabled
 @Autonomous(name="Bridge Park Left Delay", group="Linear Opmode")
 
 public class BParkLeftDelay extends LinearOpMode {

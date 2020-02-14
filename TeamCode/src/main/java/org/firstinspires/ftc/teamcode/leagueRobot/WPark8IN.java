@@ -88,7 +88,7 @@ public class WPark8IN extends LinearOpMode {
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    vroom.driveX(8, 1, 10);
+                    vroom.driveX(8, 1, 2);
                     break;
                 case STATE_STOP:
                     break;

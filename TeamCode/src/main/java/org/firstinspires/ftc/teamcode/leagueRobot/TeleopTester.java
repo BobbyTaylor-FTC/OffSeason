@@ -88,7 +88,7 @@ boolean grabStone = false;
         while (opModeIsActive())
         {
 
-/*
+
 //lift code
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
@@ -114,28 +114,21 @@ boolean grabStone = false;
                     shouldLiftMove = true;
                     telemetry.addData("Min height", "");
                 }
-
-
-
-                if(gamepad2.left_stick_y!=0){
-                    if((ellie.maxHeight*ellie.ticksPerHeight>(leftLift.getCurrentPosition()+20))&&leftLift.getCurrentPosition()-20>0){
-                        ellie.setLiftPower(gamepad2.left_stick_y);
+                if(gamepad2.right_stick_y!=0){
+                    if((ellie.maxHeight*ellie.ticksPerHeight>(leftLift.getCurrentPosition()+20))&&leftLift.getCurrentPosition()-10>0){
+                        ellie.setLiftPower(gamepad2.right_stick_y);
                     }
-
-                    if((ellie.maxHeight*ellie.ticksPerHeight>leftLift.getCurrentPosition()+50)&&(0<leftLift.getCurrentPosition()+30)) {
-                        ellie.setLiftPower(gamepad1.left_stick_y);
-                    }
-                    else if(ellie.maxHeight*ellie.ticksPerHeight>leftLift.getCurrentPosition()+50){
-                        if(gamepad2.left_stick_y>0){
-                            ellie.setLiftPower(gamepad2.left_stick_y);
+                    else if(ellie.maxHeight*ellie.ticksPerHeight>leftLift.getCurrentPosition()+20){
+                        if(gamepad2.right_stick_y>0){
+                            ellie.setLiftPower(gamepad2.right_stick_y);
                         }
                     }
-                    else if(0<leftLift.getCurrentPosition()+30){
-                        if(gamepad2.left_stick_y<0){
-                            ellie.setLiftPower(gamepad2.left_stick_y);
+                    else if(0<leftLift.getCurrentPosition()-10){
+                        if(gamepad2.right_stick_y<0){
+                            ellie.setLiftPower(gamepad2.right_stick_y);
                         }
                     }
-                telemetry.addData("Custom movement", gamepad2.left_stick_y);
+                telemetry.addData("Custom movement", gamepad2.right_stick_y);
                 shouldLiftMove = false;
                 }
                 else if(shouldLiftMove){
@@ -143,8 +136,8 @@ boolean grabStone = false;
                     telemetry.addData("Lift moving to", liftLocation);
                 }
                 telemetry.addData("Should the lift move?",shouldLiftMove);
- */
-ellie.setLiftPower(.4*gamepad2.right_stick_y);
+
+//ellie.setLiftPower(.4*gamepad2.right_stick_y);
 
 
 
@@ -194,7 +187,7 @@ ellie.setLiftPower(.4*gamepad2.right_stick_y);
                 telemetry.addData("Lift Right encoders: ",rightLift.getCurrentPosition());
                 telemetry.addData("Lift Right power: ",rightLift.getPower());
                 telemetry.addData("Grab stone?", grabStone);
-            telemetry.addData("Grab foundation?", grabFound);
+                telemetry.addData("Grab foundation?", grabFound);
 
             telemetry.update();
             }
