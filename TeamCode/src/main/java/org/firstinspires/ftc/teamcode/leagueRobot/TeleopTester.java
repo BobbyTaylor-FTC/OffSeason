@@ -144,7 +144,7 @@ boolean grabStone = false;
                 }
                 telemetry.addData("Should the lift move?",shouldLiftMove);
  */
-ellie.setLiftPower(.4*gamepad2.left_stick_y);
+ellie.setLiftPower(.4*gamepad2.right_stick_y);
 
 
 
@@ -156,6 +156,7 @@ ellie.setLiftPower(.4*gamepad2.left_stick_y);
                 pull.grabFound();
                 grabFound = true;
             }
+
 
             if(gamepad1.y&&grabStone){
                 pince.release();
@@ -192,6 +193,8 @@ ellie.setLiftPower(.4*gamepad2.left_stick_y);
                 telemetry.addData("Lift Left power: ",leftLift.getPower());
                 telemetry.addData("Lift Right encoders: ",rightLift.getCurrentPosition());
                 telemetry.addData("Lift Right power: ",rightLift.getPower());
+                telemetry.addData("Grab stone?", grabStone);
+            telemetry.addData("Grab foundation?", grabFound);
 
             telemetry.update();
             }

@@ -46,6 +46,7 @@ public class BParkRightDelay extends LinearOpMode {
     private enum State{
         STATE_INITIAL,
         STATE_PARK,
+        STATE_STOP,
     }
 
     private ElapsedTime mStateTime = new ElapsedTime();
@@ -81,6 +82,7 @@ public class BParkRightDelay extends LinearOpMode {
 
 
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
+        while (!isStopRequested() && opModeIsActive()){
         switch(mCurrentState){
             case STATE_INITIAL:
                 newState(State.STATE_PARK);
@@ -88,12 +90,15 @@ public class BParkRightDelay extends LinearOpMode {
                 break;
             case STATE_PARK:
                 vroom.delay(24);
-                vroom.driveX(30,.8,2);
-                vroom.driveY(30,.6,3);
+                vroom.driveX(30,1,2);
+                vroom.driveY(30,1,3);
+                break;
+            case STATE_STOP:
                 break;
         }
 
         }
+    }
 
     private void newState(State newState){
         mStateTime.reset();

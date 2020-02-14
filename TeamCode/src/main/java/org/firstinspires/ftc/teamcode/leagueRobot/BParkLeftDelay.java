@@ -46,6 +46,7 @@ public class BParkLeftDelay extends LinearOpMode {
     private enum State{
         STATE_INITIAL,
         STATE_PARK,
+        STATE_STOP,
     }
 
     private ElapsedTime mStateTime = new ElapsedTime();
@@ -58,14 +59,15 @@ public class BParkLeftDelay extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
-        drive vroom = new drive(this,telemetry,hardwareMap);
-        color see = new color(this,telemetry,hardwareMap);
-        lift ellie = new lift(this,telemetry,hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-        found pull = new found(this,telemetry,hardwareMap);
-        grabber grabby = new grabber(this,telemetry,hardwareMap);
-        range scope = new range(this,telemetry,hardwareMap);
+    public void runOpMode()
+    {
+        drive vroom = new drive(this, telemetry, hardwareMap);
+        color see = new color(this, telemetry, hardwareMap);
+        lift ellie = new lift(this, telemetry, hardwareMap);
+        revIMU gyro = new revIMU(this, telemetry, hardwareMap);
+        found pull = new found(this, telemetry, hardwareMap);
+        grabber grabby = new grabber(this, telemetry, hardwareMap);
+        range scope = new range(this, telemetry, hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -81,19 +83,25 @@ public class BParkLeftDelay extends LinearOpMode {
 
 
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
-        switch(mCurrentState){
-            case STATE_INITIAL:
-                newState(State.STATE_PARK);
+        while (!isStopRequested() && opModeIsActive())
+        {
+            switch (mCurrentState)
+            {
+                case STATE_INITIAL:
+                    newState(State.STATE_PARK);
 
-                break;
-            case STATE_PARK:
-                vroom.delay(24);
-                vroom.driveX(30,.8,2);
-                vroom.driveY(-30,.6,3);
-                break;
-        }
+                    break;
+                case STATE_PARK:
+                    vroom.delay(24);
+                    vroom.driveX(30, 1, 2);
+                    vroom.driveY(-30, 1, 3);
+                    break;
+                case STATE_STOP:
+                    break;
+            }
 
         }
+    }
 
     private void newState(State newState){
         mStateTime.reset();

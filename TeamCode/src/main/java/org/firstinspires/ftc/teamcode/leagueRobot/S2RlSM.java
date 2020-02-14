@@ -47,13 +47,13 @@ public class S2RlSM extends LinearOpMode {
         STATE_INITIAL,
         STATE_DRIVE_TO_STONE,
         STATE_LOCATE_STONE,
-        STATE_STOP,
         STATE_DRIVE_TO_DUMP,
         STATE_DUMP,
         STATE_RETURN,
         STATE_ACQUIRE_2STONE,
         STATE_DRIVE_TO_LAST_DUMP,
         STATE_PARK,
+        STATE_STOP,
     }
 
     private ElapsedTime mStateTime = new ElapsedTime();
@@ -67,14 +67,15 @@ public class S2RlSM extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
-        drive vroom = new drive(this,telemetry,hardwareMap);
-        color see = new color(this,telemetry,hardwareMap);
-        lift ellie = new lift(this,telemetry,hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-        found pull = new found(this,telemetry,hardwareMap);
-        grabber grabby = new grabber(this,telemetry,hardwareMap);
-        range scope = new range(this,telemetry,hardwareMap);
+    public void runOpMode()
+    {
+        drive vroom = new drive(this, telemetry, hardwareMap);
+        color see = new color(this, telemetry, hardwareMap);
+        lift ellie = new lift(this, telemetry, hardwareMap);
+        revIMU gyro = new revIMU(this, telemetry, hardwareMap);
+        found pull = new found(this, telemetry, hardwareMap);
+        grabber grabby = new grabber(this, telemetry, hardwareMap);
+        range scope = new range(this, telemetry, hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -90,83 +91,89 @@ public class S2RlSM extends LinearOpMode {
 
 
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
-        switch(mCurrentState){
-            case STATE_INITIAL:
-                newState(State.STATE_DRIVE_TO_STONE);
+        while (!isStopRequested() && opModeIsActive())
+        {
+            switch (mCurrentState)
+            {
+                case STATE_INITIAL:
+                    newState(State.STATE_DRIVE_TO_STONE);
 
-                break;
-            case STATE_DRIVE_TO_STONE:
-                vroom.strafeToSkystone();
-                newState(State.STATE_LOCATE_STONE);
-                break;
-            case STATE_LOCATE_STONE:
-                if(see.isSkystone(sensorColorFront,3)){
-                    skyStoneLocation = 0;
-                    vroom.driveY(-2,.6,1);
-                    //skystone grabber code here
-                    grabby.grabSkystone(skyStoneLocation);
-                    vroom.driveY(2,.6,1);
-                }
-                else if(see.isSkystone(sensorColorMiddle,2)){
-                    skyStoneLocation = 1;
-                    vroom.driveY(-2,.6,1);
-                    //skystone grabber code here
-                    grabby.grabSkystone(skyStoneLocation);
-                    vroom.driveY(2,.6,1);
-                }
-                else{
-                    skyStoneLocation = 2;
-                    vroom.driveX(-8,.7,1);
-                    vroom.driveY(-2,.6,1);
-                    //skystone grabber code here
-                    grabby.grabSkystone(1);
-                    vroom.driveY(2,.6,1);
-                    vroom.driveX(8,.7,1);
+                    break;
+                case STATE_DRIVE_TO_STONE:
+                    vroom.strafeToSkystone();
+                    newState(State.STATE_LOCATE_STONE);
+                    break;
+                case STATE_LOCATE_STONE:
+                    if (see.isSkystone(sensorColorFront, 3))
+                    {
+                        skyStoneLocation = 0;
+                        vroom.driveY(-6, 1, 1);
+                        //skystone grabber code here
+                        grabby.grabSkystone(skyStoneLocation);
+                        vroom.driveY(6, 1, 1);
+                    } else if (see.isSkystone(sensorColorMiddle, 2))
+                    {
+                        skyStoneLocation = 1;
+                        vroom.driveY(-6, 1, 1);
+                        //skystone grabber code here
+                        grabby.grabSkystone(skyStoneLocation);
+                        vroom.driveY(6, 1, 1);
+                    } else
+                    {
+                        skyStoneLocation = 2;
+                        vroom.driveX(-8, 1, 1);
+                        vroom.driveY(-6, 1, 1);
+                        //skystone grabber code here
+                        grabby.grabSkystone(1);
+                        vroom.driveY(6, 1, 1);
+                        vroom.driveX(8, 1, 1);
 
-                }
-                newState(State.STATE_DRIVE_TO_DUMP);
-                break;
-            case STATE_DRIVE_TO_DUMP:
-                vroom.driveX(54,1,3);
-                newState(State.STATE_DUMP);
-                break;
-            case STATE_DUMP:
-                //skystone grabber release code here
-                grabby.releaseSkystone();
-                newState(State.STATE_RETURN);
-                break;
-            case STATE_RETURN:
-                vroom.driveX(-54,1,3);
-                newState(State.STATE_ACQUIRE_2STONE);
-                break;
-            case STATE_ACQUIRE_2STONE:
-                for(int i = 0; i<skyStoneLocation;i++)
-                {
-                    vroom.driveX(-8,.8,1);
-                }
-                vroom.driveY(-2,.6,1);
-                //skystone grabber code here
-                grabby.grabSkystone(0);
-                vroom.driveY(2,.6,1);
-                for(int i = 0; i<skyStoneLocation;i++)
-                {
-                    vroom.driveX(8,.8,1);
-                }
-                newState(State.STATE_DRIVE_TO_LAST_DUMP);
-                break;
-            case STATE_DRIVE_TO_LAST_DUMP:
-                vroom.driveX(54,1,3);
-                //skystone grabber code here
-                grabby.releaseSkystone();
-                newState(State.STATE_PARK);
-                break;
-            case STATE_PARK:
-                vroom.driveX(-28,1,3);
-                break;
+                    }
+                    newState(State.STATE_DRIVE_TO_DUMP);
+                    break;
+                case STATE_DRIVE_TO_DUMP:
+                    vroom.driveX(54, 1, 3);
+                    newState(State.STATE_DUMP);
+                    break;
+                case STATE_DUMP:
+                    //skystone grabber release code here
+                    grabby.releaseSkystone();
+                    newState(State.STATE_RETURN);
+                    break;
+                case STATE_RETURN:
+                    vroom.driveX(-54, 1, 3);
+                    newState(State.STATE_ACQUIRE_2STONE);
+                    break;
+                case STATE_ACQUIRE_2STONE:
+                    for (int i = 0; i < skyStoneLocation; i++)
+                    {
+                        vroom.driveX(-8, 1, 1);
+                    }
+                    vroom.driveY(-6, 1, 1);
+                    //skystone grabber code here
+                    grabby.grabSkystone(0);
+                    vroom.driveY(6, 1, 1);
+                    for (int i = 0; i < skyStoneLocation; i++)
+                    {
+                        vroom.driveX(8, 1, 1);
+                    }
+                    newState(State.STATE_DRIVE_TO_LAST_DUMP);
+                    break;
+                case STATE_DRIVE_TO_LAST_DUMP:
+                    vroom.driveX(54, 1, 3);
+                    //skystone grabber code here
+                    grabby.releaseSkystone();
+                    newState(State.STATE_PARK);
+                    break;
+                case STATE_PARK:
+                    vroom.driveX(-28, 1, 3);
+                    break;
+                case STATE_STOP:
+                    break;
+            }
+
         }
-
-        }
-
+    }
     private void newState(State newState){
         mStateTime.reset();
         mCurrentState = newState;

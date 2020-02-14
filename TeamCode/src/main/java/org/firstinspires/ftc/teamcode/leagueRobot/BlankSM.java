@@ -68,14 +68,15 @@ public class BlankSM extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
-        drive vroom = new drive(this,telemetry,hardwareMap);
-        color see = new color(this,telemetry,hardwareMap);
-        lift ellie = new lift(this,telemetry,hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-        found pull = new found(this,telemetry,hardwareMap);
-        grabber grabby = new grabber(this,telemetry,hardwareMap);
-        range scope = new range(this,telemetry,hardwareMap);
+    public void runOpMode()
+    {
+        drive vroom = new drive(this, telemetry, hardwareMap);
+        color see = new color(this, telemetry, hardwareMap);
+        lift ellie = new lift(this, telemetry, hardwareMap);
+        revIMU gyro = new revIMU(this, telemetry, hardwareMap);
+        found pull = new found(this, telemetry, hardwareMap);
+        grabber grabby = new grabber(this, telemetry, hardwareMap);
+        range scope = new range(this, telemetry, hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -91,45 +92,48 @@ public class BlankSM extends LinearOpMode {
 
 
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
-        switch(mCurrentState){
-            case STATE_INITIAL:
-                newState(State.STATE_DRIVE_TO_STONE);
+        while (!isStopRequested() && opModeIsActive())
+        {
+            switch (mCurrentState)
+            {
+                case STATE_INITIAL:
+                    newState(State.STATE_DRIVE_TO_STONE);
 
-                break;
-            case STATE_DRIVE_TO_STONE:
+                    break;
+                case STATE_DRIVE_TO_STONE:
 
-                break;
-            case STATE_LOCATE_STONE:
+                    break;
+                case STATE_LOCATE_STONE:
 
-                newState(State.STATE_DRIVE_TO_DUMP);
-                break;
-            case STATE_DRIVE_TO_DUMP:
+                    newState(State.STATE_DRIVE_TO_DUMP);
+                    break;
+                case STATE_DRIVE_TO_DUMP:
 
-                newState(State.STATE_DUMP);
-                break;
-            case STATE_DUMP:
+                    newState(State.STATE_DUMP);
+                    break;
+                case STATE_DUMP:
 
-                newState(State.STATE_RETURN);
-                break;
-            case STATE_RETURN:
+                    newState(State.STATE_RETURN);
+                    break;
+                case STATE_RETURN:
 
-                newState(State.STATE_ACQUIRE_2STONE);
-                break;
-            case STATE_ACQUIRE_2STONE:
+                    newState(State.STATE_ACQUIRE_2STONE);
+                    break;
+                case STATE_ACQUIRE_2STONE:
 
-                newState(State.STATE_DRIVE_TO_LAST_DUMP);
-                break;
-            case STATE_DRIVE_TO_LAST_DUMP:
+                    newState(State.STATE_DRIVE_TO_LAST_DUMP);
+                    break;
+                case STATE_DRIVE_TO_LAST_DUMP:
 
-                newState(State.STATE_PARK);
-                break;
-            case STATE_PARK:
+                    newState(State.STATE_PARK);
+                    break;
+                case STATE_PARK:
 
-                break;
+                    break;
+            }
+
         }
-
-        }
-
+    }
     private void newState(State newState){
         mStateTime.reset();
         mCurrentState = newState;

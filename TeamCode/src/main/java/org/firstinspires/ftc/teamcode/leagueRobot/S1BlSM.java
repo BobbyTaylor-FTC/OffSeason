@@ -65,20 +65,21 @@ public class S1BlSM extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
-        drive vroom = new drive(this,telemetry,hardwareMap);
-        color see = new color(this,telemetry,hardwareMap);
-        lift ellie = new lift(this,telemetry,hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-        found pull = new found(this,telemetry,hardwareMap);
-        grabber grabby = new grabber(this,telemetry,hardwareMap);
-        range scope = new range(this,telemetry,hardwareMap);
+    public void runOpMode()
+    {
+        drive vroom = new drive(this, telemetry, hardwareMap);
+        color see = new color(this, telemetry, hardwareMap);
+        lift ellie = new lift(this, telemetry, hardwareMap);
+        revIMU gyro = new revIMU(this, telemetry, hardwareMap);
+        found pull = new found(this, telemetry, hardwareMap);
+        grabber grabby = new grabber(this, telemetry, hardwareMap);
+        range scope = new range(this, telemetry, hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
 
         runtime.reset();
-         mStateTime.reset();
+        mStateTime.reset();
         newState(State.STATE_INITIAL);  //newState(State.expample); changes state
 
         //Execute the current state. Each STATE's case code does the following:
@@ -86,60 +87,66 @@ public class S1BlSM extends LinearOpMode {
         //2: If an EVENT is found, take any required ACTION, an then set the next STATE else
         //3: If no EVENT is found, do processing for the current STATE and send TELEMETRY data for STATE
 
-telemetry.addData("Current State", mCurrentState.toString());
+        telemetry.addData("Current State", mCurrentState.toString());
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
-        switch(mCurrentState){
-            case STATE_INITIAL:
-                newState(State.STATE_DRIVE_TO_STONE);
-                break;
-            case STATE_DRIVE_TO_STONE:
-                //vroom.strafeToSkystone();
-                vroom.driveY(30,1,2);
-                newState(State.STATE_LOCATE_STONE);
-                break;
-            case STATE_LOCATE_STONE:
-                if(see.isSkystone(sensorColorFront,3)){
-                    skyStoneLocation = 0;
-                    vroom.driveY(2,1,1);
-                    //skystone grabber code here
-                    grabby.grabSkystone(skyStoneLocation);
-                    vroom.driveY(-2,1,1);
-                }
-                else if(see.isSkystone(sensorColorMiddle,2)){
-                    skyStoneLocation = 1;
-                    vroom.driveY(2,1,1);
-                    //skystone grabber code here
-                    grabby.grabSkystone(skyStoneLocation);
-                    vroom.driveY(-2,1,1);
-                }
-                else{
-                    skyStoneLocation = 2;
-                    vroom.driveX(-8,1,1);
-                    vroom.driveY(2,1,1);
-                    //skystone grabber code here
-                    grabby.grabSkystone(1);
-                    vroom.driveY(-2,1,1);
-                    vroom.driveX(8,1,1);
+        while (!isStopRequested() && opModeIsActive())
+        {
+            switch (mCurrentState)
+            {
+                case STATE_INITIAL:
+                    newState(State.STATE_DRIVE_TO_STONE);
+                    break;
+                case STATE_DRIVE_TO_STONE:
+                    //vroom.strafeToSkystone();
+                    vroom.driveY(30, 1, 2);
+                    newState(State.STATE_LOCATE_STONE);
+                    break;
+                case STATE_LOCATE_STONE:
+                    if (see.isSkystone(sensorColorFront, 3))
+                    {
+                        skyStoneLocation = 0;
+                        vroom.driveY(6, 1, 1);
+                        //skystone grabber code here
+                        grabby.grabSkystone(skyStoneLocation);
+                        vroom.driveY(-6, 1, 1);
+                    } else if (see.isSkystone(sensorColorMiddle, 2))
+                    {
+                        skyStoneLocation = 1;
+                        vroom.driveY(6, 1, 1);
+                        //skystone grabber code here
+                        grabby.grabSkystone(skyStoneLocation);
+                        vroom.driveY(-6, 1, 1);
+                    } else
+                    {
+                        skyStoneLocation = 2;
+                        vroom.driveX(-8, 1, 1);
+                        vroom.driveY(6, 1, 1);
+                        //skystone grabber code here
+                        grabby.grabSkystone(1);
+                        vroom.driveY(-6, 1, 1);
+                        vroom.driveX(8, 1, 1);
 
-                }
-                newState(State.STATE_DRIVE_TO_DUMP);
-                break;
-            case STATE_DRIVE_TO_DUMP:
-                vroom.driveX(54,1,3);
-                newState(State.STATE_DUMP);
-                break;
-            case STATE_DUMP:
-                //skystone grabber release code here
-                grabby.releaseSkystone();
-                newState(State.STATE_PARK);
-                break;
-            case STATE_PARK:
-                vroom.driveX(-28,1,3);
-                break;
+                    }
+                    newState(State.STATE_DRIVE_TO_DUMP);
+                    break;
+                case STATE_DRIVE_TO_DUMP:
+                    vroom.driveX(54, 1, 3);
+                    newState(State.STATE_DUMP);
+                    break;
+                case STATE_DUMP:
+                    //skystone grabber release code here
+                    grabby.releaseSkystone();
+                    newState(State.STATE_PARK);
+                    break;
+                case STATE_PARK:
+                    vroom.driveX(-28, 1, 3);
+                    break;
+                case STATE_STOP:
+                    break;
+            }
+
         }
-
-        }
-
+    }
     private void newState(State newState){
         mStateTime.reset();
         mCurrentState = newState;
