@@ -16,14 +16,14 @@ public class revIMU
 
 
     LinearOpMode opModeObj;
-    public BNO055IMU imu;
+    BNO055IMU imu;
 
     public revIMU(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         opModeObj = opmode;
         imu = hardwareMap.get(BNO055IMU.class,"imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+       // parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         //parameters.calibrationDataFile = "BNO055IMUCalibration.json"; //note: run the calibration mode in SensorBNO055IMUCalibration
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";

@@ -16,7 +16,7 @@ public class lift
 
 
     LinearOpMode opModeObj;
-public int ticksPerHeight = 100;
+public int ticksPerHeight =100;
 public int maxHeight = 4;
 
 
@@ -38,20 +38,29 @@ public double kd = 0;
     public lift(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         leftLift = hardwareMap.get(DcMotor.class,"left_lift");
         rightLift = hardwareMap.get(DcMotor.class,"right_lift");
+        leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
+       // leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
         leftLift.setPower(0);
         rightLift.setPower(0);
         opModeObj = opmode;
     }
 
 public void liftMove(int height){
+if(height == 0){
+    motorPower(leftLift,height*ticksPerHeight);
+    motorPower(rightLift,height*ticksPerHeight);
+}
+else if(height!=0){
+    motorPower(leftLift,(height-1)*ticksPerHeight+25);
+    motorPower(rightLift,(height-1)*ticksPerHeight+25);
+}
 
-motorPower(leftLift,height*ticksPerHeight);
-motorPower(rightLift,height*ticksPerHeight);
 }
 
 public double posDif(double currPos, double endPos){
@@ -59,14 +68,14 @@ public double posDif(double currPos, double endPos){
 }
 
 public void setLiftPower(double power){ //sets power for both lift motors, not recommended.
-        leftLift.setPower(power+.09);
-        rightLift.setPower(power+.09);
+        leftLift.setPower(power);
+        rightLift.setPower(power);
 }
 
 public void motorPower(DcMotor liftMotor, int goal)
 {
     nowtime = runtime.seconds();
- error = liftMotor.getCurrentPosition()-goal;
+ error = -liftMotor.getCurrentPosition()+goal;
     double output = kp*error + kd*(error-lasterror)/(nowtime-thentime);
 
     //store these variables for the next loop

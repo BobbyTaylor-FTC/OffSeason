@@ -379,9 +379,13 @@ this.opModeObj.telemetry.update();
         while ((frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())&&(motortime.seconds()<time))
         {
             this.opModeObj.telemetry.addData("Where I at fL", frontLeft.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast?", frontLeft.getPower());
             this.opModeObj.telemetry.addData("Where I at fR", frontRight.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast?", frontRight.getPower());
             this.opModeObj.telemetry.addData("Where I at bL", backLeft.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast?", backLeft.getPower());
             this.opModeObj.telemetry.addData("Where I at bR", backRight.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast?", backRight.getPower());
 
             this.opModeObj.telemetry.update();
         }

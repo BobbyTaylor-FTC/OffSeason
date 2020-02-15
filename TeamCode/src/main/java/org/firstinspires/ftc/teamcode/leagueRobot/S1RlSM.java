@@ -69,7 +69,7 @@ public class S1RlSM extends LinearOpMode {
         drive vroom = new drive(this, telemetry, hardwareMap);
         color see = new color(this, telemetry, hardwareMap);
         //lift ellie = new lift(this, telemetry, hardwareMap);
-        //revIMU gyro = new revIMU(this, telemetry, hardwareMap);
+        //  revIMU gyro = new revIMU(this, telemetry, hardwareMap);
         //found pull = new found(this, telemetry, hardwareMap);
         grabber grabby = new grabber(this, telemetry, hardwareMap);
         range scope = new range(this, telemetry, hardwareMap);

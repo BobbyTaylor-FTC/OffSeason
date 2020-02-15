@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.leagueRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -48,6 +49,7 @@ public class TeleopTester extends LinearOpMode
 
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime lastLoop = new ElapsedTime();
 
     boolean shouldLiftMove = true; // if this variable is true, the lift will move to the position dictated by the gamepads.
     //if the variable is false, the lift will not move to the position and will instead stay at a position dictated by the right gamestick
@@ -64,8 +66,8 @@ public class TeleopTester extends LinearOpMode
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
-
         runtime.reset();
+        lastLoop.reset();
 boolean grabFound = false;
 boolean grabStone = false;
         drive vroom = new drive(this,telemetry,hardwareMap);
@@ -82,6 +84,7 @@ boolean grabStone = false;
         rightLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLift.setDirection(DcMotorSimple.Direction.REVERSE) ;
         leftLift.setPower(0);
         rightLift.setPower(0);
         int liftLocation = 0; //height of lift: 0 = ground, 1 = first stone, 2 = second stone, 3 = third stone, 4 = fourth stone
@@ -90,6 +93,7 @@ boolean grabStone = false;
 
 
 //lift code
+            if(lastLoop.milliseconds()>100){
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
                         liftLocation++;
@@ -114,21 +118,19 @@ boolean grabStone = false;
                     shouldLiftMove = true;
                     telemetry.addData("Min height", "");
                 }
+                lastLoop.reset();
+            }
+
+
                 if(gamepad2.right_stick_y!=0){
-                    if((ellie.maxHeight*ellie.ticksPerHeight>(leftLift.getCurrentPosition()+20))&&leftLift.getCurrentPosition()-10>0){
-                        ellie.setLiftPower(gamepad2.right_stick_y);
+                    if(leftLift.getCurrentPosition()>0){
+                        ellie.setLiftPower(.4*gamepad2.right_stick_y);
                     }
-                    else if(ellie.maxHeight*ellie.ticksPerHeight>leftLift.getCurrentPosition()+20){
-                        if(gamepad2.right_stick_y>0){
-                            ellie.setLiftPower(gamepad2.right_stick_y);
-                        }
+                    else {
+                        liftLocation = 0;
+                        shouldLiftMove = true;
                     }
-                    else if(0<leftLift.getCurrentPosition()-10){
-                        if(gamepad2.right_stick_y<0){
-                            ellie.setLiftPower(gamepad2.right_stick_y);
-                        }
-                    }
-                telemetry.addData("Custom movement", gamepad2.right_stick_y);
+                telemetry.addData("Custom movement", .4*gamepad2.right_stick_y);
                 shouldLiftMove = false;
                 }
                 else if(shouldLiftMove){
@@ -136,8 +138,16 @@ boolean grabStone = false;
                     telemetry.addData("Lift moving to", liftLocation);
                 }
                 telemetry.addData("Should the lift move?",shouldLiftMove);
+/*
+if(leftLift.getCurrentPosition()>=-20) {
+    ellie.setLiftPower(-.4 * gamepad2.right_stick_y);
+}
+else{
+    ellie.setLiftPower((Math.abs(.4*gamepad2.right_stick_y)));
+}
+ */
 
-//ellie.setLiftPower(.4*gamepad2.right_stick_y);
+
 
 
 
@@ -150,7 +160,7 @@ boolean grabStone = false;
                 grabFound = true;
             }
 
-
+/*
             if(gamepad1.y&&grabStone){
                 pince.release();
                 grabStone = false;
@@ -158,6 +168,14 @@ boolean grabStone = false;
             else if(gamepad1.y){
                 grabStone = true;
                 pince.close();
+            }
+ */
+            if(gamepad2.y){
+                pince.close();
+                grabStone = false;
+            }
+            else{
+                pince.release();
             }
 
 
@@ -186,6 +204,8 @@ boolean grabStone = false;
                 telemetry.addData("Lift Left power: ",leftLift.getPower());
                 telemetry.addData("Lift Right encoders: ",rightLift.getCurrentPosition());
                 telemetry.addData("Lift Right power: ",rightLift.getPower());
+            telemetry.addData("Left direction: ",leftLift.getDirection());
+            telemetry.addData("Right direction ",rightLift.getDirection());
                 telemetry.addData("Grab stone?", grabStone);
                 telemetry.addData("Grab foundation?", grabFound);
 

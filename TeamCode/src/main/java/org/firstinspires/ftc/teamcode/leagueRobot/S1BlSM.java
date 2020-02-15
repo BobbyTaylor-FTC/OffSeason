@@ -98,7 +98,7 @@ public class S1BlSM extends LinearOpMode {
                     break;
                 case STATE_DRIVE_TO_STONE:
                     //vroom.strafeToSkystone();
-                    vroom.driveY(30, 1, 2);
+                    vroom.driveY(30, .8, 2);
                     newState(State.STATE_LOCATE_STONE);
                     break;
                 case STATE_LOCATE_STONE:
