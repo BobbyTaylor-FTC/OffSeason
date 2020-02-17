@@ -15,8 +15,8 @@ public class color
 
     LinearOpMode opModeObj;
     ColorSensor sensorColor;
-    public ColorSensor sensorColorFront = null;
-    public ColorSensor sensorColorMiddle = null;
+    ColorSensor sensorColorFront = null;
+    ColorSensor sensorColorMiddle = null;
 
     public color(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         opModeObj = opmode;
@@ -27,7 +27,7 @@ public class color
     public boolean isSkystone(ColorSensor sense, int cc){//cc is 2 for color sensor v2, and 3 for color sensor v3
         this.sensorColor = sense;
         try{
-            if((this.sensorColor.red() * this.sensorColor.green() / (this.sensorColor.blue() * this.sensorColor.blue()))<=cc){
+            if((sense.red() * sense.green() / (sense.blue() * sense.blue()))<=cc){
                 opModeObj.telemetry.addData("skystone found", "found");
                 opModeObj.telemetry.update();
                 return true;
@@ -39,7 +39,7 @@ public class color
 
         }
         catch(ArithmeticException e){
-            if(this.sensorColor.red() *this.sensorColor.green() / (.00001 * .00001)<=cc){
+            if(sense.red() *sense.green() / (.00001 * .00001)<=cc){
                 opModeObj.telemetry.addData("skystone found", "found");
                 opModeObj.telemetry.update();
                 return true;

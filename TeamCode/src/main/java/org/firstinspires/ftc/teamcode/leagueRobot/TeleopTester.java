@@ -87,13 +87,13 @@ boolean grabStone = false;
         leftLift.setDirection(DcMotorSimple.Direction.REVERSE) ;
         leftLift.setPower(0);
         rightLift.setPower(0);
-        int liftLocation = 0; //height of lift: 0 = ground, 1 = first stone, 2 = second stone, 3 = third stone, 4 = fourth stone
+        int liftLocation = 0; //height of lift: 0 = ground, 1 = first stone, 2 = second stone, 3 = third stone, 4 = fourth stone 5 = fifth stone or capstone
         while (opModeIsActive())
         {
 
 
 //lift code
-            if(lastLoop.milliseconds()>100){
+            if(lastLoop.milliseconds()>50){
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
                         liftLocation++;
@@ -117,6 +117,14 @@ boolean grabStone = false;
                     liftLocation = 0; //min lift position
                     shouldLiftMove = true;
                     telemetry.addData("Min height", "");
+                }
+                if(gamepad1.a&&grabFound){
+                    pull.releaseFound();
+                    grabFound = false;
+                }
+                else if(gamepad1.a){
+                    pull.grabFound();
+                    grabFound = true;
                 }
                 lastLoop.reset();
             }
@@ -147,29 +155,6 @@ else{
 }
  */
 
-
-
-
-
-            if(gamepad1.a&&grabFound){
-                pull.releaseFound();
-                grabFound = false;
-            }
-            else if(gamepad1.a){
-                pull.grabFound();
-                grabFound = true;
-            }
-
-/*
-            if(gamepad1.y&&grabStone){
-                pince.release();
-                grabStone = false;
-            }
-            else if(gamepad1.y){
-                grabStone = true;
-                pince.close();
-            }
- */
             if(gamepad2.y){
                 pince.close();
                 grabStone = false;
@@ -178,28 +163,19 @@ else{
                 pince.release();
             }
 
-
-
             if(gamepad1.b){
-                    grabby.grabSkystone(0);
-                    grabby.grabSkystone(1);
-                }
-                else {
-                    grabby.releaseSkystone();
-                }
+                grabby.grabSkystone(0);
+                grabby.grabSkystone(1);
+            }
+            else {
+                grabby.releaseSkystone();
+            }
 
 
                 //drive code
                     vroom.driveT(1);
-                /*
-                                if(gamepad2.b){
-                    vroom.turn(90);
-                }
-                 */
 
-                if(gamepad2.x){
-                    telemetry.addData("How far",scope.range());
-                }
+                /*
                 telemetry.addData("Lift Left encoders: ",leftLift.getCurrentPosition());
                 telemetry.addData("Lift Left power: ",leftLift.getPower());
                 telemetry.addData("Lift Right encoders: ",rightLift.getCurrentPosition());
@@ -208,6 +184,8 @@ else{
             telemetry.addData("Right direction ",rightLift.getDirection());
                 telemetry.addData("Grab stone?", grabStone);
                 telemetry.addData("Grab foundation?", grabFound);
+                 */
+
 
             telemetry.update();
             }

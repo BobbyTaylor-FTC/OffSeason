@@ -17,7 +17,7 @@ public class lift
 
     LinearOpMode opModeObj;
 public int ticksPerHeight =100;
-public int maxHeight = 4;
+public int maxHeight = 5;
 
 
 
@@ -28,6 +28,7 @@ public int error;
 
 public double nowtime, thentime;
 
+//kp = .009, kd = 0;
 
 public double kp = .009;
 public double kd = 0;
@@ -57,8 +58,9 @@ if(height == 0){
     motorPower(rightLift,height*ticksPerHeight);
 }
 else if(height!=0){
-    motorPower(leftLift,(height-1)*ticksPerHeight+25);
-    motorPower(rightLift,(height-1)*ticksPerHeight+25);
+    int goalPos = (height-1)*ticksPerHeight+25;
+    motorPower(leftLift,goalPos);
+    motorPower(rightLift,goalPos);
 }
 
 }
@@ -68,8 +70,8 @@ public double posDif(double currPos, double endPos){
 }
 
 public void setLiftPower(double power){ //sets power for both lift motors, not recommended.
-        leftLift.setPower(power);
-        rightLift.setPower(power);
+        leftLift.setPower(Range.clip(power,-.3,1));
+        rightLift.setPower(Range.clip(power,-.3,1));
 }
 
 public void motorPower(DcMotor liftMotor, int goal)
@@ -81,6 +83,6 @@ public void motorPower(DcMotor liftMotor, int goal)
     //store these variables for the next loop
     lasterror = error;
     thentime = nowtime;
-    liftMotor.setPower(Range.clip(output,-1,1));
+    liftMotor.setPower(Range.clip(output,-.3,1));
 }
 }

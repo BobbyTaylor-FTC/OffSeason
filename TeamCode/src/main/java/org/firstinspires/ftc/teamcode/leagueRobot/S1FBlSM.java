@@ -75,6 +75,8 @@ public class S1FBlSM extends LinearOpMode {
         found pull = new found(this, telemetry, hardwareMap);
         grabber grabby = new grabber(this, telemetry, hardwareMap);
         range scope = new range(this, telemetry, hardwareMap);
+        sensorColorMiddle = hardwareMap.get(ColorSensor.class,"Msensor_color_distance");
+        sensorColorFront = hardwareMap.get(ColorSensor.class,"Fsensor_color_distance");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
