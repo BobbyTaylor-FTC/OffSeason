@@ -102,7 +102,7 @@ public class S2RlSM extends LinearOpMode {
 
                     break;
                 case STATE_DRIVE_TO_STONE:
-                    vroom.strafeToSkystone();
+                    vroom.driveY(40,.9,3);
                     newState(State.STATE_LOCATE_STONE);
                     break;
                 case STATE_LOCATE_STONE:
