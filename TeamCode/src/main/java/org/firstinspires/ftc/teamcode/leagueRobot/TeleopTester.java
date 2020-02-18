@@ -54,6 +54,13 @@ public class TeleopTester extends LinearOpMode
     boolean shouldLiftMove = true; // if this variable is true, the lift will move to the position dictated by the gamepads.
     //if the variable is false, the lift will not move to the position and will instead stay at a position dictated by the right gamestick
 
+    boolean grabFound = false;
+    boolean grabStone = false;
+
+    boolean shouldHoldHeight = false;
+
+    int holdPosition;
+
     public DcMotor leftLift = null;
     public DcMotor rightLift = null;
 
@@ -68,8 +75,7 @@ public class TeleopTester extends LinearOpMode
         waitForStart();
         runtime.reset();
         lastLoop.reset();
-boolean grabFound = false;
-boolean grabStone = false;
+
         drive vroom = new drive(this,telemetry,hardwareMap);
         color see = new color(this,telemetry,hardwareMap);
         lift ellie = new lift(this,telemetry,hardwareMap);
@@ -100,6 +106,7 @@ boolean grabStone = false;
                         telemetry.addData("Going up", "");
                     }
                     shouldLiftMove = true;
+                    shouldHoldHeight = false;
                 }
                 else if(gamepad2.dpad_down){
                     if(liftLocation>0){ //makes sure that the lift cannot get into a negative position which would likely break the lift
@@ -107,15 +114,18 @@ boolean grabStone = false;
                         telemetry.addData("Going down", "");
                     }
                     shouldLiftMove = true;
+                    shouldHoldHeight = false;
                 }
                 else if(gamepad2.dpad_right){
                     liftLocation = ellie.maxHeight; //replace with max lift position
                     shouldLiftMove = true;
+                    shouldHoldHeight = false;
                     telemetry.addData("Max height", "");
                 }
                 else if(gamepad2.dpad_left){
                     liftLocation = 0; //min lift position
                     shouldLiftMove = true;
+                    shouldHoldHeight = false;
                     telemetry.addData("Min height", "");
                 }
                 if(gamepad1.a&&grabFound){
@@ -131,15 +141,21 @@ boolean grabStone = false;
 
 
                 if(gamepad2.right_stick_y!=0){
+                    shouldHoldHeight = false;
                     if(leftLift.getCurrentPosition()>0){
                         ellie.setLiftPower(.4*gamepad2.right_stick_y);
+                        shouldLiftMove = false;
+                        holdPosition = leftLift.getCurrentPosition();
                     }
                     else {
                         liftLocation = 0;
                         shouldLiftMove = true;
                     }
                 telemetry.addData("Custom movement", .4*gamepad2.right_stick_y);
-                shouldLiftMove = false;
+                }
+                else if(shouldHoldHeight){
+                    ellie.motorPower(leftLift,holdPosition);
+                    ellie.motorPower(rightLift,holdPosition);
                 }
                 else if(shouldLiftMove){
                     ellie.liftMove(liftLocation);

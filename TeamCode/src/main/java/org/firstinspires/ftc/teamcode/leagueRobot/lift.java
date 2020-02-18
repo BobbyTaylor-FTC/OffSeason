@@ -54,8 +54,8 @@ public double kd = 0;
 
 public void liftMove(int height){
 if(height == 0){
-    motorPower(leftLift,height*ticksPerHeight);
-    motorPower(rightLift,height*ticksPerHeight);
+    motorPower(leftLift,0);
+    motorPower(rightLift,0);
 }
 else if(height!=0){
     int goalPos = (height-1)*ticksPerHeight+25;
