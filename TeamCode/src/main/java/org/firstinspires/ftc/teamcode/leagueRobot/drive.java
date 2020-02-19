@@ -244,19 +244,24 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
 
     public void turn(double degrees) {
         double startHeading = gyro.getAngle();
-        while (posDif(gyro.getAngle(), startHeading + degrees) > 2) {
+        while (posDif(gyro.getAngle(), startHeading + degrees) > 1) {
             //blocking code because the myMap will 100% need to finish turning
             nowtime = runtime.seconds();
             error = degrees+startHeading-gyro.getAngle();
             double output = kPturn * error + kDturn * (error - lasterror) / (nowtime - thentime);
             Range.clip(output,-.8,.8);
             setPowerT(output);
-
+            opModeObj.telemetry.addData("error",error);
+            opModeObj.telemetry.addData("degrees",gyro.getAngle());
+            opModeObj.telemetry.addData("power",frontLeft.getPower());
+            opModeObj.telemetry.update();
 
             //store these variables for the next loop
             lasterror = error;
             thentime = nowtime;
         }
+        setPowerT(0);
+        opModeObj.telemetry.addData("Turn","Completed");
     }
     public void strafeToSkystone(){
         while(scope.range()>1){

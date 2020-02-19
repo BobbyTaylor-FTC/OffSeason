@@ -139,7 +139,9 @@ public class TeleopTester extends LinearOpMode
                 lastLoop.reset();
             }
 
-
+                if(gamepad2.right_stick_y==0&&shouldLiftMove ==false){
+                    shouldHoldHeight = true;
+                }
                 if(gamepad2.right_stick_y!=0){
                     shouldHoldHeight = false;
                     if(leftLift.getCurrentPosition()>0){
@@ -162,6 +164,7 @@ public class TeleopTester extends LinearOpMode
                     telemetry.addData("Lift moving to", liftLocation);
                 }
                 telemetry.addData("Should the lift move?",shouldLiftMove);
+                telemetry.addData("Should lift maintain custom height?",shouldHoldHeight);
 /*
 if(leftLift.getCurrentPosition()>=-20) {
     ellie.setLiftPower(-.4 * gamepad2.right_stick_y);
