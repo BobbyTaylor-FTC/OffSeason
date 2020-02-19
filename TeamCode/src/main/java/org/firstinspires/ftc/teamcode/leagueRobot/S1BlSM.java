@@ -89,7 +89,7 @@ public class S1BlSM extends LinearOpMode {
         //2: If an EVENT is found, take any required ACTION, an then set the next STATE else
         //3: If no EVENT is found, do processing for the current STATE and send TELEMETRY data for STATE
 
-        telemetry.addData("Current State", mCurrentState.toString());
+
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
         while (!isStopRequested() && opModeIsActive())
         {
@@ -146,6 +146,7 @@ public class S1BlSM extends LinearOpMode {
                 case STATE_STOP:
                     break;
             }
+            telemetry.addData("Current State", mCurrentState.toString());
 
         }
     }
