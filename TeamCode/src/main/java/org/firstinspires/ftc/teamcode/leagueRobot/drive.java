@@ -33,26 +33,13 @@ public class drive
     private ElapsedTime motortime = new ElapsedTime();
 
 
-    public double kPturn = .03;
-    public double kDturn = 0;
-
-    public double kPstrafeangle = 0.03;
-    public double kDstrafeangle = 0;
-
     public double kPstrafe = .03;
     public double kDstrafe = 0;
-
-    public double kPdrive = 0.1;
-    public double kIdrive = 0;
-    public double kDdrive = 0;
 
     public double strafeHeading = 0;
 
     public int frontLefttarget, frontRighttarget,backRighttarget,backLefttarget;
 
-    private int error1, error2, error3, error4, lasterror1,lasterror2,lasterror3,lasterror4;
-    private int integral1 = 0, integral2 = 0, integral3 = 0, integral4 = 0;
-    private double output1, output2, output3, output4;
 
     public DcMotorEx frontLeft   = null;
     public DcMotorEx  frontRight  = null;
@@ -158,6 +145,8 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         // Ensure that the opmode is still active
 
     }
+    public double kPstrafeangle = 0.015;
+    public double kDstrafeangle = 0.006;
     public void driveY(double y, double speed, double time){ //check to see if this is the correct code
         double strafeHeading = gyro.getAngle();
         y = (int) y * COUNTS_PER_INCH;
@@ -181,24 +170,17 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         setPower(speed);
         ElapsedTime motortime = new ElapsedTime();
         motortime.reset();
-        while ((frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())&&(motortime.seconds()<time))
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&(motortime.seconds()<time))
         {
             nowtime = runtime.seconds();
             error = strafeHeading-gyro.getAngle();
             output = kPstrafeangle*error + kDstrafeangle*(error-lasterror)/(nowtime-thentime);
-            Range.clip(output,-.2,.2);
-            frontLeft.setPower(speed-output);
-            frontRight.setPower(speed-output);
-            backLeft.setPower(speed+output);
-            backRight.setPower(speed+output);
-            this.opModeObj.telemetry.addData("Where I at fL", frontLeft.getCurrentPosition());
-            this.opModeObj.telemetry.addData("How fast?", frontLeft.getPower());
-            this.opModeObj.telemetry.addData("Where I at fR", frontRight.getCurrentPosition());
-            this.opModeObj.telemetry.addData("How fast?", frontRight.getPower());
-            this.opModeObj.telemetry.addData("Where I at bL", backLeft.getCurrentPosition());
-            this.opModeObj.telemetry.addData("How fast?", backLeft.getPower());
-            this.opModeObj.telemetry.addData("Where I at bR", backRight.getCurrentPosition());
-            this.opModeObj.telemetry.addData("How fast?", backRight.getPower());
+            Range.clip(output,-.4,.4);
+            frontLeft.setPower(speed+output);
+            frontRight.setPower(speed+output);
+            backLeft.setPower((speed-output));
+            backRight.setPower((speed-output));
+
             //store these variables for the next loop
             lasterror = error;
             thentime = nowtime;
@@ -212,7 +194,23 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turn(error);
+        this.opModeObj.telemetry.addData("loop","complete");
+        this.opModeObj.telemetry.update();
     }
+                /*
+            this.opModeObj.telemetry.addData("Goal",frontLefttarget);
+            this.opModeObj.telemetry.addData("Where I at fL", frontLeft.getCurrentPosition());
+           this.opModeObj.telemetry.addData("How fast?", frontLeft.getPower());
+           this.opModeObj.telemetry.addData("Where I at fR", frontRight.getCurrentPosition());
+           this.opModeObj.telemetry.addData("How fast?", frontRight.getPower());
+           this.opModeObj.telemetry.addData("Where I at bL", backLeft.getCurrentPosition());
+           this.opModeObj.telemetry.addData("How fast?", backLeft.getPower());
+           this.opModeObj.telemetry.addData("Where I at bR", backRight.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast BR?", backRight.getPower());
+             */
+
+
     public void setPower(double speed)
     {
         frontRight.setPower(speed);
@@ -241,17 +239,18 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         backLeft.setPower(speed);
     }
 
-
+    public double kPturn = .036; //.03
+    public double kDturn = 0.003;
     public void turn(double degrees) {
         double startHeading = gyro.getAngle();
-        while (posDif(gyro.getAngle(), startHeading + degrees) > 1) {
+        while (posDif(gyro.getAngle(), startHeading + degrees) > .3) {
             //blocking code because the myMap will 100% need to finish turning
             nowtime = runtime.seconds();
             error = degrees+startHeading-gyro.getAngle();
             double output = kPturn * error + kDturn * (error - lasterror) / (nowtime - thentime);
             Range.clip(output,-.8,.8);
             setPowerT(output);
-            opModeObj.telemetry.addData("error",error);
+            opModeObj.telemetry.addData("errorcheck",error);
             opModeObj.telemetry.addData("degrees",gyro.getAngle());
             opModeObj.telemetry.addData("power",frontLeft.getPower());
             opModeObj.telemetry.update();

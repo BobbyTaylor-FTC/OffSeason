@@ -101,7 +101,8 @@ public class S1FBlSM extends LinearOpMode {
 
                     break;
                 case STATE_DRIVE_TO_STONE:
-                    vroom.driveY(40,.9,3);
+                    vroom.driveY(41,.9,2);
+                    vroom.driveX(9,1,1);
                     newState(State.STATE_LOCATE_STONE);
                     break;
                 case STATE_LOCATE_STONE:
@@ -156,6 +157,7 @@ public class S1FBlSM extends LinearOpMode {
                     vroom.driveX(-10, 1, 1);
                     vroom.driveY(43, 1, 3);
                     vroom.driveX(-28, 1, 3);
+                    newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:
                     break;

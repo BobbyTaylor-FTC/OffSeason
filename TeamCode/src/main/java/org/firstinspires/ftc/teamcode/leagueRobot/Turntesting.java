@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode.leagueRobot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -38,9 +37,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
 Start with the front color sensor inline with the middle of the first stone
  */
-@Autonomous(name="Wall Park 8 inches", group="Linear Opmode")
+@Autonomous(name="Turning 90 -90", group="Linear Opmode")
 
-public class WPark8IN extends LinearOpMode {
+public class Turntesting extends LinearOpMode {
 
     private enum State{
         STATE_INITIAL,
@@ -52,7 +51,7 @@ public class WPark8IN extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private State mCurrentState; //Current State Machine State.
-    public WPark8IN(){
+    public Turntesting(){
 
     }
 
@@ -88,7 +87,9 @@ public class WPark8IN extends LinearOpMode {
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    vroom.driveX(8, 1, 2);
+                    vroom.turn(90);
+                    telemetry.addData("Turn", "Complete");
+                    vroom.turn(-90);
                     newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:

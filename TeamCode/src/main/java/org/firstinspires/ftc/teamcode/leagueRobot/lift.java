@@ -58,7 +58,7 @@ if(height == 0){
     motorPower(rightLift,0);
 }
 else if(height!=0){
-    int goalPos = (height-1)*ticksPerHeight+25;
+    int goalPos = (height-1)*ticksPerHeight+35;
     motorPower(leftLift,goalPos);
     motorPower(rightLift,goalPos);
 }

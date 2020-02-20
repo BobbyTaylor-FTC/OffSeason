@@ -21,10 +21,10 @@ public class grabber
         rightStone = hardwareMap.get(Servo.class,"right_stone");
     }
     public void grabSkystone(int pos){
-        if(pos == 0){
+        if(pos == 1){
             rightStone.setPosition(.92);
         }
-        if(pos == 1){
+        if(pos == 0){
             leftStone.setPosition(0);
         }
     }
