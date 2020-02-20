@@ -99,7 +99,7 @@ public class TeleopTester extends LinearOpMode
 
 
 //lift code
-            if(lastLoop.milliseconds()>50){
+            if(lastLoop.milliseconds()>220){
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
                         liftLocation++;
@@ -113,19 +113,14 @@ public class TeleopTester extends LinearOpMode
                         liftLocation--;
                         telemetry.addData("Going down", "");
                     }
-                    shouldLiftMove = true;
-                    shouldHoldHeight = false;
                 }
                 else if(gamepad2.dpad_right){
                     liftLocation = ellie.maxHeight; //replace with max lift position
-                    shouldLiftMove = true;
-                    shouldHoldHeight = false;
                     telemetry.addData("Max height", "");
                 }
                 else if(gamepad2.dpad_left){
                     liftLocation = 0; //min lift position
-                    shouldLiftMove = true;
-                    shouldHoldHeight = false;
+
                     telemetry.addData("Min height", "");
                 }
                 if(gamepad1.a&&grabFound){
@@ -139,40 +134,9 @@ public class TeleopTester extends LinearOpMode
                 lastLoop.reset();
             }
 
-                if(gamepad2.right_stick_y==0&&shouldLiftMove ==false){
-                    shouldHoldHeight = true;
-                }
-                if(gamepad2.right_stick_y!=0){
-                    shouldHoldHeight = false;
-                    if(leftLift.getCurrentPosition()>0){
-                        ellie.setLiftPower(.4*gamepad2.right_stick_y);
-                        shouldLiftMove = false;
-                        holdPosition = leftLift.getCurrentPosition();
-                    }
-                    else {
-                        liftLocation = 0;
-                        shouldLiftMove = true;
-                    }
-                telemetry.addData("Custom movement", .4*gamepad2.right_stick_y);
-                }
-                else if(shouldHoldHeight){
-                    ellie.motorPower(leftLift,holdPosition);
-                    ellie.motorPower(rightLift,holdPosition);
-                }
-                else if(shouldLiftMove){
                     ellie.liftMove(liftLocation);
                     telemetry.addData("Lift moving to", liftLocation);
-                }
-                telemetry.addData("Should the lift move?",shouldLiftMove);
-                telemetry.addData("Should lift maintain custom height?",shouldHoldHeight);
-/*
-if(leftLift.getCurrentPosition()>=-20) {
-    ellie.setLiftPower(-.4 * gamepad2.right_stick_y);
-}
-else{
-    ellie.setLiftPower((Math.abs(.4*gamepad2.right_stick_y)));
-}
- */
+
 
             if(gamepad2.y){
                 pince.close();
