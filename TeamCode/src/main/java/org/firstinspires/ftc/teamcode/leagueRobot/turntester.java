@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode.leagueRobot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -38,9 +37,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
 Start with the front color sensor inline with the middle of the first stone
  */
-@Autonomous(name="Bridge Park Left Delay", group="Linear Opmode")
+@Autonomous(name="turn 18 -18", group="Linear Opmode")
 
-public class BParkLeftDelay extends LinearOpMode {
+public class turntester extends LinearOpMode {
 
     private enum State{
         STATE_INITIAL,
@@ -52,7 +51,7 @@ public class BParkLeftDelay extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private State mCurrentState; //Current State Machine State.
-    public BParkLeftDelay(){
+    public turntester(){
 
     }
 
@@ -61,12 +60,12 @@ public class BParkLeftDelay extends LinearOpMode {
     public void runOpMode()
     {
         drive vroom = new drive(this, telemetry, hardwareMap);
-        //color see = new color(this, telemetry, hardwareMap);
-        //lift ellie = new lift(this, telemetry, hardwareMap);
-        //revIMU gyro = new revIMU(this, telemetry, hardwareMap);
-        //found pull = new found(this, telemetry, hardwareMap);
-        //grabber grabby = new grabber(this, telemetry, hardwareMap);
-        //range scope = new range(this, telemetry, hardwareMap);
+        color see = new color(this, telemetry, hardwareMap);
+        lift ellie = new lift(this, telemetry, hardwareMap);
+        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
+        found pull = new found(this, telemetry, hardwareMap);
+        grabber grabby = new grabber(this, telemetry, hardwareMap);
+        range scope = new range(this, telemetry, hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
@@ -79,8 +78,6 @@ public class BParkLeftDelay extends LinearOpMode {
         //1: Look for an EVENT that wil cause a STATE change
         //2: If an EVENT is found, take any required ACTION, an then set the next STATE else
         //3: If no EVENT is found, do processing for the current STATE and send TELEMETRY data for STATE
-
-
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
         while (!isStopRequested() && opModeIsActive())
         {
@@ -88,12 +85,11 @@ public class BParkLeftDelay extends LinearOpMode {
             {
                 case STATE_INITIAL:
                     newState(State.STATE_PARK);
-
                     break;
                 case STATE_PARK:
-                    vroom.delay(24);
-                    vroom.driveX(30, 1, 2);
-                    vroom.driveY(-30, 1, 3);
+                    vroom.turn(18);
+                    vroom.turn(-18);
+                    newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:
                     break;
