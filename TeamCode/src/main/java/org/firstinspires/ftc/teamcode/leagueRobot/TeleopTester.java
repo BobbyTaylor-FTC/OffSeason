@@ -99,7 +99,7 @@ public class TeleopTester extends LinearOpMode
 
 
 //lift code
-            if(lastLoop.milliseconds()>220){
+            if(lastLoop.milliseconds()>170){
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
                         liftLocation++;
@@ -123,11 +123,11 @@ public class TeleopTester extends LinearOpMode
 
                     telemetry.addData("Min height", "");
                 }
-                if(gamepad1.a&&grabFound){
+                if(gamepad2.a&&grabFound){
                     pull.releaseFound();
                     grabFound = false;
                 }
-                else if(gamepad1.a){
+                else if(gamepad2.a){
                     pull.grabFound();
                     grabFound = true;
                 }
@@ -145,7 +145,7 @@ public class TeleopTester extends LinearOpMode
             else{
                 pince.release();
             }
-
+/*
             if(gamepad1.b){
                 grabby.grabSkystone(0);
                 grabby.grabSkystone(1);
@@ -153,6 +153,8 @@ public class TeleopTester extends LinearOpMode
             else {
                 grabby.releaseSkystone();
             }
+ */
+
 
 
                 //drive code

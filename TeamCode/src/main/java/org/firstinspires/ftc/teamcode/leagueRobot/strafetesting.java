@@ -87,7 +87,9 @@ public class strafetesting extends LinearOpMode {
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    vroom.driveY(41,.9,2);
+                    vroom.driveY(4,.5,1);
+                    vroom.driveY(-20,.5,1);
+                    vroom.driveX(8,1,1);
                     telemetry.addData("Turn", "Complete");
                     telemetry.update();
                     //vroom.driveY(-30,.8,10);

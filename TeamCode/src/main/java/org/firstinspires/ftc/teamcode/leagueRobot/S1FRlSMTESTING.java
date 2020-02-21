@@ -39,9 +39,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 Start with the front color sensor inline with the middle of the first stone
  */
 
-@Autonomous(name="One Sample Foundation Blue", group="Linear Opmode")
+@Autonomous(name="Sample tester", group="Linear Opmode")
 
-public class S1FBlSM extends LinearOpMode {
+public class S1FRlSMTESTING extends LinearOpMode {
 
     private enum State{
         STATE_INITIAL,
@@ -60,7 +60,7 @@ public class S1FBlSM extends LinearOpMode {
     public ColorSensor sensorColorFront = null;
     public ColorSensor sensorColorMiddle = null;
     private State mCurrentState; //Current State Machine State.
-    public S1FBlSM(){
+    public S1FRlSMTESTING(){
 
     }
 
@@ -98,48 +98,55 @@ public class S1FBlSM extends LinearOpMode {
             {
                 case STATE_INITIAL:
                     newState(State.STATE_DRIVE_TO_STONE);
-
+                    grabby.releaseSkystone();
                     break;
                 case STATE_DRIVE_TO_STONE:
-                    vroom.driveY(41  ,.9,1.4);
-                    vroom.driveX(9,1,1);
+                    vroom.driveY(48  ,.9,1.29);
+                    vroom.driveX(10,1,1);
                     newState(State.STATE_LOCATE_STONE);
                     break;
                 case STATE_LOCATE_STONE:
+                    vroom.driveY(8, .5, 1);
                     if (see.isSkystone(sensorColorFront, 3))
                     {
                         skyStoneLocation = 0;
-                        vroom.driveY(4, 1, .4);
+                        telemetry.addData("Skystone at ",skyStoneLocation);
+                        telemetry.update();
+                        //vroom.driveY(8, .5, 1);
                         //skystone grabber code here
                         grabby.grabSkystone(skyStoneLocation);
-                        vroom.driveY(-9, 1, .8);
+                        vroom.delay(.5);
+                        vroom.driveY(-28, 1, 1.3);
                     } else if (see.isSkystone(sensorColorMiddle, 2))
                     {
                         skyStoneLocation = 1;
                         telemetry.addData("Skystone at ",skyStoneLocation);
                         telemetry.update();
-                        vroom.driveY(4, 1, .4);
+                        //vroom.driveY(8, .5, 1);
                         //skystone grabber code here
                         grabby.grabSkystone(skyStoneLocation);
-                        vroom.driveY(-9, 1, 1);
+                        vroom.delay(.5);
+                        vroom.driveY(-28, 1, 1.3);
                     } else
                     {
+                        vroom.driveY(-8,.5,1);
                         skyStoneLocation = 2;
                         telemetry.addData("Skystone at ",skyStoneLocation);
                         telemetry.update();
-                        vroom.driveX(-8, 1, 1);
-                        vroom.driveY(4, 1, 1);
+                        vroom.driveX(-9, 1, 1);
+                        vroom.driveY(8, .5, 1);
                         //skystone grabber code here
-                        grabby.grabSkystone(1);
-                        vroom.driveY(-9, 1, 1);
-                        vroom.driveX(8, 1, 1);
+                        grabby.grabSkystone(0);
+                        vroom.delay(.5);
+                        vroom.driveY(-28, 1, 1.3);
+                        vroom.driveX(9, 1, 1);
 
                     }
                     newState(State.STATE_DRIVE_TO_DUMP);
                     break;
                 case STATE_DRIVE_TO_DUMP:
-                    vroom.turnto(0,2);
-                    vroom.driveX(54, 1, 3);
+                    vroom.turnto(0,1);
+                    vroom.driveX(45, 1, 3);
                     newState(State.STATE_DUMP);
                     break;
                 case STATE_DUMP:
@@ -148,20 +155,29 @@ public class S1FBlSM extends LinearOpMode {
                     newState(State.STATE_DRIVE_TO_FOUND);
                     break;
                 case STATE_DRIVE_TO_FOUND:
-                    vroom.driveX(10, 1, 1);
-                    vroom.driveY(4, 1, 1);
+                    vroom.driveX(25,1,1);
+                    vroom.turn(-90,1.5);
+                    vroom.driveX(-15, .5, 1);
                     newState(State.STATE_MOVE_FOUND);
                     break;
                 case STATE_MOVE_FOUND:
                     pull.grabFound();
-                    vroom.driveY(-40, 1, 3);
+                    vroom.delay(.5);
+                    vroom.driveX(17, 1, 1);
+                    vroom.driveY(-45 ,1,1);
+                    vroom.turn(-90,1);
+                    vroom.driveX(-5,.3,1);
                     pull.releaseFound();
+                    vroom.delay(.3);
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    vroom.driveX(-10, 1, 1);
-                    vroom.driveY(43, 1, 3);
-                    vroom.driveX(-28, 1, 3);
+                    vroom.driveX(40,1,2);
+                    //vroom.turn(90,3);
+                    //vroom.turnto(0,1);
+                    //vroom.driveX(35, 1, 2);
+                   //vroom.driveX(-24, .9, 1.35);
+                    //vroom.driveY(-28, 1, 1);
                     newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:

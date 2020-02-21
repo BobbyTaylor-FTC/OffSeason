@@ -87,8 +87,9 @@ public class turntester extends LinearOpMode {
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    vroom.turn(18);
-                    vroom.turn(-18);
+                    //vroom.turn(18,5);
+                    vroom.turn(-90,2);
+                    //vroom.turn(-18,5);
                     newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:

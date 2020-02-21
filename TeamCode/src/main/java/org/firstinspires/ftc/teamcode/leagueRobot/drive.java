@@ -49,7 +49,6 @@ public class drive
     public range scope;
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
-
 public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
     this.hardwareMap = hardwareMap;
     opModeObj = opmode;
@@ -168,7 +167,6 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         setPower(speed);
-        ElapsedTime motortime = new ElapsedTime();
         motortime.reset();
         while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&(motortime.seconds()<time))
         {
@@ -194,7 +192,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turn(error);
+        turn(error,1);
         this.opModeObj.telemetry.addData("loop","complete");
         this.opModeObj.telemetry.update();
     }
@@ -241,12 +239,35 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
 
     public double kPturn = .036; //.03
     public double kDturn = 0.003;
-    public void turn(double degrees) {
+    public void turn(double degrees,double wait) {
         double startHeading = gyro.getAngle();
-        while (posDif(gyro.getAngle(), startHeading + degrees) > .3) {
+        motortime.reset();
+        while (posDif(gyro.getAngle(), startHeading + degrees) > .3&&motortime.seconds()<wait) {
             //blocking code because the myMap will 100% need to finish turning
             nowtime = runtime.seconds();
             error = degrees+startHeading-gyro.getAngle();
+            double output = kPturn * error + kDturn * (error - lasterror) / (nowtime - thentime);
+            Range.clip(output,-.8,.8);
+            setPowerT(output);
+            opModeObj.telemetry.addData("errorcheck",error);
+            opModeObj.telemetry.addData("degrees",gyro.getAngle());
+            opModeObj.telemetry.addData("power",frontLeft.getPower());
+            opModeObj.telemetry.update();
+
+            //store these variables for the next loop
+            lasterror = error;
+            thentime = nowtime;
+        }
+        setPowerT(0);
+        opModeObj.telemetry.addData("Turn","Completed");
+    }
+    public void turnto(double degrees,double wait) {
+        double startHeading = gyro.getAngle();
+        motortime.reset();
+        while (posDif(gyro.getAngle(), degrees) > .3&&motortime.seconds()<wait) {
+            //blocking code because the myMap will 100% need to finish turning
+            nowtime = runtime.seconds();
+            error = degrees-gyro.getAngle();
             double output = kPturn * error + kDturn * (error - lasterror) / (nowtime - thentime);
             Range.clip(output,-.8,.8);
             setPowerT(output);
