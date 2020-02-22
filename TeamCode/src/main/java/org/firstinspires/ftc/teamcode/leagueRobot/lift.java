@@ -70,8 +70,8 @@ public double posDif(double currPos, double endPos){
 }
 
 public void setLiftPower(double power){ //sets power for both lift motors, not recommended.
-        leftLift.setPower(Range.clip(power,-.05,1));
-        rightLift.setPower(Range.clip(power,-.05,1));
+        leftLift.setPower(Range.clip(power,-.25,1));
+        rightLift.setPower(Range.clip(power,-.25,1));
 }
 
 public void motorPower(DcMotor liftMotor, int goal)

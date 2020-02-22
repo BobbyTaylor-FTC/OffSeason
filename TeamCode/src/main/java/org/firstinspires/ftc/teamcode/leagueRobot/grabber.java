@@ -22,7 +22,7 @@ public class grabber
     }
     public void grabSkystone(int pos){
         if(pos == 1){
-            rightStone.setPosition(.92);
+            rightStone.setPosition(.95);
         }
         if(pos == 0){
             leftStone.setPosition(0);
@@ -31,7 +31,7 @@ public class grabber
     public void releaseSkystone(){
         //don't need to specify which grabber is released because all can be set to go to their 0 position with impunity
         rightStone.setPosition(.45);
-        leftStone.setPosition(.5);
+        leftStone.setPosition(.5 );
     }
 
 

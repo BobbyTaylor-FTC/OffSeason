@@ -95,16 +95,18 @@ public class S1RlSM extends LinearOpMode {
             switch (mCurrentState)
             {
                 case STATE_INITIAL:
-                    newState(State.STATE_DRIVE_TO_STONE);
                     grabby.releaseSkystone();
+                    //pull.releaseFound();
+                    newState(State.STATE_DRIVE_TO_STONE);
                     break;
                 case STATE_DRIVE_TO_STONE:
-                    vroom.driveY(48, .9, 1.29);
-                    vroom.driveX(10, 1, 1);
+                    vroom.driveY(30, .9, 1.29);
+                    vroom.driveX(4.3, .5, .3);
+                    //vroom.driveX(10,1,1);
                     newState(State.STATE_LOCATE_STONE);
                     break;
                 case STATE_LOCATE_STONE:
-                    vroom.driveY(8, .5, 1);
+                    vroom.driveY(7.5, .5, 1);
                     if (see.isSkystone(sensorColorFront, 3))
                     {
                         skyStoneLocation = 0;
@@ -114,7 +116,7 @@ public class S1RlSM extends LinearOpMode {
                         //skystone grabber code here
                         grabby.grabSkystone(skyStoneLocation);
                         vroom.delay(.5);
-                        vroom.driveY(-28, 1, 1.3);
+                        vroom.driveY(-15, 1, 1.3);
                     } else if (see.isSkystone(sensorColorMiddle, 2))
                     {
                         skyStoneLocation = 1;
@@ -124,7 +126,7 @@ public class S1RlSM extends LinearOpMode {
                         //skystone grabber code here
                         grabby.grabSkystone(skyStoneLocation);
                         vroom.delay(.5);
-                        vroom.driveY(-28, 1, 1.3);
+                        vroom.driveY(-15, 1, 1.3);
                     } else
                     {
                         vroom.driveY(-8, .5, 1);
@@ -136,7 +138,7 @@ public class S1RlSM extends LinearOpMode {
                         //skystone grabber code here
                         grabby.grabSkystone(0);
                         vroom.delay(.5);
-                        vroom.driveY(-28, 1, 1.3);
+                        vroom.driveY(-15, 1, 1.3);
                         vroom.driveX(9, 1, 1);
 
                     }
@@ -153,11 +155,13 @@ public class S1RlSM extends LinearOpMode {
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    vroom.driveX(-30,1,2);
+                    vroom.driveY(4,1,1);
+                    vroom.driveX(-20, 1, 2);
                     newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:
                     break;
+
 
             }
         }

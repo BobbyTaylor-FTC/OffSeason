@@ -38,22 +38,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
 Start with the front color sensor inline with the middle of the first stone
  */
-@Disabled
-@Autonomous(name="turn 18 -18", group="Linear Opmode")
 
-public class turntester extends LinearOpMode {
+@Autonomous(name="Foundation Red", group="Linear Opmode")
+
+public class FRSM extends LinearOpMode {
 
     private enum State{
         STATE_INITIAL,
-        STATE_PARK,
+        STATE_DRIVE_TO_FOUND,
+        STATE_GRAB_FOUND,
+        STATE_PULL_FOUND,
+        STATE_RELEASE_FOUND,
         STATE_STOP,
+        STATE_PARK,
     }
 
     private ElapsedTime mStateTime = new ElapsedTime();
     private ElapsedTime runtime = new ElapsedTime();
 
     private State mCurrentState; //Current State Machine State.
-    public turntester(){
+    public FRSM(){
 
     }
 
@@ -64,7 +68,7 @@ public class turntester extends LinearOpMode {
         drive vroom = new drive(this, telemetry, hardwareMap);
         color see = new color(this, telemetry, hardwareMap);
         lift ellie = new lift(this, telemetry, hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
+        revIMU gyro = new revIMU(this, telemetry, hardwareMap);
         found pull = new found(this, telemetry, hardwareMap);
         grabber grabby = new grabber(this, telemetry, hardwareMap);
         range scope = new range(this, telemetry, hardwareMap);
@@ -80,27 +84,52 @@ public class turntester extends LinearOpMode {
         //1: Look for an EVENT that wil cause a STATE change
         //2: If an EVENT is found, take any required ACTION, an then set the next STATE else
         //3: If no EVENT is found, do processing for the current STATE and send TELEMETRY data for STATE
+
+
         int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
         while (!isStopRequested() && opModeIsActive())
         {
             switch (mCurrentState)
             {
                 case STATE_INITIAL:
+                    pull.releaseFound();
+                    vroom.delay(.5);
+                    newState(State.STATE_DRIVE_TO_FOUND);
+                    break;
+                case STATE_DRIVE_TO_FOUND:
+                    vroom.driveX(-23,1,3);
+                    vroom.driveY(8,.8,1);
+                    vroom.driveX(-7,.3,1);
+                    newState(State.STATE_GRAB_FOUND);
+                    break;
+                case STATE_GRAB_FOUND:
+                    pull.grabFound();
+                    vroom.delay(.5);
+                    newState(State.STATE_PULL_FOUND);
+                    break;
+                case STATE_PULL_FOUND:
+                    vroom.driveX(33,1,1);
+                    newState(State.STATE_RELEASE_FOUND);
+                    break;
+                case STATE_RELEASE_FOUND:
+                    pull.releaseFound();
+                    vroom.delay(.5);
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    //vroom.turn(18,5);
-                    vroom.turn(-90,2);
-                    //vroom.turn(-18,5);
+                    vroom.driveY(-32,1,3);
+                    vroom.driveX(-23,.8,1);
+                    vroom.driveY(10,.3,1);
+                    vroom.driveY(-25,1,1);
                     newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:
+
                     break;
             }
 
         }
     }
-
     private void newState(State newState){
         mStateTime.reset();
         mCurrentState = newState;

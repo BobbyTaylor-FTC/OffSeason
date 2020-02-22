@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.leagueRobot;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -40,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
 Start with the front color sensor inline with the middle of the first stone
  */
-
+@Disabled
 @TeleOp(name="SampleCheck", group="Linear Opmode")
 
 public class Sampling extends LinearOpMode

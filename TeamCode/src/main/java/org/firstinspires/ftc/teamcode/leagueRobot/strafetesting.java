@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.leagueRobot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -37,6 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
 Start with the front color sensor inline with the middle of the first stone
  */
+@Disabled
 @Autonomous(name="Strafe test 70 -30", group="Linear Opmode")
 
 public class strafetesting extends LinearOpMode {
@@ -87,9 +89,11 @@ public class strafetesting extends LinearOpMode {
                     newState(State.STATE_PARK);
                     break;
                 case STATE_PARK:
-                    vroom.driveY(4,.5,1);
-                    vroom.driveY(-20,.5,1);
-                    vroom.driveX(8,1,1);
+                    //vroom.driveY(4,.5,1);
+                    //vroom.driveY(-20,.5,1);
+                    //.driveX(8,1,1);
+                    vroom.driveX(20,1,1);
+                    vroom.driveY(20,1,1);
                     telemetry.addData("Turn", "Complete");
                     telemetry.update();
                     //vroom.driveY(-30,.8,10);
