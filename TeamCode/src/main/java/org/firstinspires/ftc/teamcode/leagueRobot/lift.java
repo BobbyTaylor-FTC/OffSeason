@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.leagueRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,14 +38,14 @@ public double kd = 0;
     public DcMotor rightLift = null;
     
     public lift(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
-        leftLift = hardwareMap.get(DcMotor.class,"left_lift");
-        rightLift = hardwareMap.get(DcMotor.class,"right_lift");
-        leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLift = hardwareMap.get(DcMotorEx.class,"left_lift");
+        rightLift = hardwareMap.get(DcMotorEx.class,"right_lift");
+        leftLift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightLift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftLift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightLift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
        // leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftLift.setPower(0);

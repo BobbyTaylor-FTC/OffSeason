@@ -1,0 +1,33 @@
+package org.firstinspires.ftc.teamcode.leagueRobot;
+
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.List;
+
+public class bulk
+{
+
+    HardwareMap hardwareMap;
+    Telemetry telemetry;
+    LinearOpMode opModeObj;
+    public bulk(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
+opModeObj = opmode;
+bulkManual();
+    }
+
+    public void bulkManual(){
+        // Important Step 2: Get access to a list of Expansion Hub Modules to enable changing caching methods.
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule module : allHubs) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+    }
+
+
+
+
+}

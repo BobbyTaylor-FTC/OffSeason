@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.leagueRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -69,13 +70,6 @@ public class TeleopTester extends LinearOpMode
     @Override
     public void runOpMode()
     {
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-        waitForStart();
-        runtime.reset();
-        lastLoop.reset();
-
         drive vroom = new drive(this,telemetry,hardwareMap);
         color see = new color(this,telemetry,hardwareMap);
         lift ellie = new lift(this,telemetry,hardwareMap);
@@ -84,16 +78,23 @@ public class TeleopTester extends LinearOpMode
         grabber grabby = new grabber(this,telemetry,hardwareMap);
         range scope = new range(this,telemetry,hardwareMap);
         claw pince = new claw(this,telemetry,hardwareMap);
-        leftLift = hardwareMap.get(DcMotor.class,"left_lift");
-        rightLift = hardwareMap.get(DcMotor.class,"right_lift");
-        leftLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftLift.setDirection(DcMotorSimple.Direction.REVERSE) ;
+        bulk reader = new bulk(this,telemetry,hardwareMap);
+        leftLift = hardwareMap.get(DcMotorEx.class,"left_lift");
+        rightLift = hardwareMap.get(DcMotorEx.class,"right_lift");
+        leftLift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightLift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftLift.setDirection(DcMotorEx.Direction.REVERSE) ;
         leftLift.setPower(0);
         rightLift.setPower(0);
         int liftLocation = 0; //height of lift: 0 = ground, 1 = first stone, 2 = second stone, 3 = third stone, 4 = fourth stone 5 = fifth stone or capstone
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+        waitForStart();
+        runtime.reset();
+        lastLoop.reset();
         while (opModeIsActive())
         {
 

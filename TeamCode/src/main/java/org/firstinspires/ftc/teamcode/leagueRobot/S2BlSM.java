@@ -81,6 +81,7 @@ public class S2BlSM extends LinearOpMode {
         range scope = new range(this, telemetry, hardwareMap);
         sensorColorMiddle = hardwareMap.get(ColorSensor.class,"Msensor_color_distance");
         sensorColorFront = hardwareMap.get(ColorSensor.class,"Fsensor_color_distance");
+        bulk reader = new bulk(this,telemetry,hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();

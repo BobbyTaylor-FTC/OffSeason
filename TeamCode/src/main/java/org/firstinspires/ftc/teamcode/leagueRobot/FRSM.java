@@ -72,6 +72,7 @@ public class FRSM extends LinearOpMode {
         found pull = new found(this, telemetry, hardwareMap);
         grabber grabby = new grabber(this, telemetry, hardwareMap);
         range scope = new range(this, telemetry, hardwareMap);
+        bulk reader = new bulk(this,telemetry,hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();

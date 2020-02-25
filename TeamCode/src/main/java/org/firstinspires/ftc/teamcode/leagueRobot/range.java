@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Disabled
 public class range
 {
-    HardwareMecanum robot = new HardwareMecanum();
 
     LinearOpMode opModeObj;
     public DistanceSensor sensorRange;

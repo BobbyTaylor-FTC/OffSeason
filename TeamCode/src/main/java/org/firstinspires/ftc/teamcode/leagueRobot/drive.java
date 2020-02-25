@@ -50,7 +50,6 @@ public class drive
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
 public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
-    this.hardwareMap = hardwareMap;
     opModeObj = opmode;
     frontLeft  = hardwareMap.get(DcMotorEx.class,"front_left");
     frontRight = hardwareMap.get(DcMotorEx.class,"front_right");
@@ -60,8 +59,8 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
     frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-    frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    backRight.setDirection(DcMotorEx.Direction.REVERSE);
+    frontRight.setDirection(DcMotorEx.Direction.REVERSE);
     frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -162,10 +161,10 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         frontRight.setTargetPosition(frontRighttarget);
         backRight.setTargetPosition(backRighttarget);
         backLeft.setTargetPosition(backLefttarget);
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         setPower(speed);
         motortime.reset();
         while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&(motortime.seconds()<time))
