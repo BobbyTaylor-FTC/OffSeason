@@ -145,15 +145,15 @@ public class TeleopTester extends LinearOpMode
             else{
                 pince.release();
             }
-/*
-            if(gamepad1.b){
+
+            if(gamepad2                                                                                            .b){
                 grabby.grabSkystone(0);
                 grabby.grabSkystone(1);
             }
             else {
                 grabby.releaseSkystone();
             }
- */
+
 
 
 

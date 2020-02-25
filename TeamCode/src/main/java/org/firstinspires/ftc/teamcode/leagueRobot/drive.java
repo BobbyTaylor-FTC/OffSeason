@@ -77,9 +77,9 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
     }
 
     public void driveT(double percentSpeed){
-        double drive = -this.opModeObj.gamepad1.left_stick_y; // inputs
+        double drive = -.7*this.opModeObj.gamepad1.left_stick_y; // inputs
         double strafe = -this.opModeObj.gamepad1.left_stick_x;
-        double turn = this.opModeObj.gamepad1.right_stick_x;
+        double turn = .7*this.opModeObj.gamepad1.right_stick_x;
 
         double lfP = drive + strafe - turn; // determining wheel proportions
         double lbP = drive - strafe - turn;

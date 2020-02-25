@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 Start with the front color sensor inline with the middle of the first stone
  */
 
-@Autonomous(name="Foundation Red", group="Linear Opmode")
+@Autonomous(name="Foundation Blue", group="Linear Opmode")
 
 public class FBSM extends LinearOpMode {
 

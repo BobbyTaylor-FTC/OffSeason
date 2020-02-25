@@ -117,7 +117,7 @@ public class S1BlSM extends LinearOpMode {
                         //skystone grabber code here
                         grabby.grabSkystone(skyStoneLocation);
                         vroom.delay(.5);
-                        vroom.driveY(-15, 1, 1.3);
+                        vroom.driveY(-15, .6, 2);
                     } else if (see.isSkystone(sensorColorMiddle, 2))
                     {
                         skyStoneLocation = 1;
@@ -127,7 +127,7 @@ public class S1BlSM extends LinearOpMode {
                         //skystone grabber code here
                         grabby.grabSkystone(skyStoneLocation);
                         vroom.delay(.5);
-                        vroom.driveY(-15, 1, 1.3);
+                        vroom.driveY(-15, .6, 2);
                     } else
                     {
                         vroom.driveY(-8, .5, 1);
@@ -139,14 +139,14 @@ public class S1BlSM extends LinearOpMode {
                         //skystone grabber code here
                         grabby.grabSkystone(1);
                         vroom.delay(.5);
-                        vroom.driveY(-15, 1, 1.3);
+                        vroom.driveY(-15, .6, 2);
                         vroom.driveX(-9, 1, 1);
 
                     }
                     newState(State.STATE_DRIVE_TO_DUMP);
                     break;
                 case STATE_DRIVE_TO_DUMP:
-                    vroom.driveY(-4, 1, 1);
+                    vroom.driveY(-1, 1, 1);
                     vroom.turnto(0, 1);
                     vroom.driveX(-45, 1, 3);
                     newState(State.STATE_DUMP);

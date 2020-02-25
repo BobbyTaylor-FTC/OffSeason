@@ -109,7 +109,7 @@ public class S2RlSM extends LinearOpMode {
                     newState(State.STATE_LOCATE_STONE);
                     break;
                 case STATE_LOCATE_STONE:
-                    vroom.driveY(7.5, .5, 1);
+                    vroom.driveY(8.7, .5, 1);
                     if (see.isSkystone(sensorColorFront, 3))
                     {
                         skyStoneLocation = 0;
@@ -172,7 +172,7 @@ public class S2RlSM extends LinearOpMode {
                     break;
                 case STATE_ACQUIRE_2STONE:
 
-                    vroom.driveY(12.5, .5, 1);
+                    vroom.driveY(13.5, .5, 1);
                     if(skyStoneLocation ==1){
                         grabby.grabSkystone(1);
                     }
@@ -182,7 +182,7 @@ public class S2RlSM extends LinearOpMode {
                     //skystone grabber code here
                     //grabby.grabSkystone(0);
                     vroom.turnto(0,1);
-                    vroom.driveY(-15.5, .5, 1);
+                    vroom.driveY(-16.5, .5, 1);
                     newState(State.STATE_DRIVE_TO_LAST_DUMP);
                     break;
                 case STATE_DRIVE_TO_LAST_DUMP:
