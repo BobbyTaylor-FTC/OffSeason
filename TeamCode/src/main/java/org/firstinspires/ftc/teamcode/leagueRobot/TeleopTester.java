@@ -51,6 +51,7 @@ public class TeleopTester extends LinearOpMode
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime lastLoop = new ElapsedTime();
+    private ElapsedTime loopTime = new ElapsedTime();
 
     boolean shouldLiftMove = true; // if this variable is true, the lift will move to the position dictated by the gamepads.
     //if the variable is false, the lift will not move to the position and will instead stay at a position dictated by the right gamestick
@@ -85,7 +86,7 @@ public class TeleopTester extends LinearOpMode
         rightLift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         leftLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftLift.setDirection(DcMotorEx.Direction.REVERSE) ;
+        leftLift.setDirection(DcMotorEx.Direction.REVERSE);
         leftLift.setPower(0);
         rightLift.setPower(0);
         int liftLocation = 0; //height of lift: 0 = ground, 1 = first stone, 2 = second stone, 3 = third stone, 4 = fourth stone 5 = fifth stone or capstone
@@ -95,10 +96,11 @@ public class TeleopTester extends LinearOpMode
         waitForStart();
         runtime.reset();
         lastLoop.reset();
+        loopTime.reset();
         while (opModeIsActive())
         {
 
-
+            loopTime.reset();
 //lift code
             if(lastLoop.milliseconds()>170){
                 if(gamepad2.dpad_up){
@@ -154,10 +156,7 @@ public class TeleopTester extends LinearOpMode
             else {
                 grabby.releaseSkystone();
             }
-
-
-
-
+            telemetry.addData("Loop time",loopTime.milliseconds());
                 //drive code
                     vroom.driveT(1);
 

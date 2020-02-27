@@ -16,13 +16,14 @@ public class bulk
     LinearOpMode opModeObj;
     public bulk(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
 opModeObj = opmode;
-bulkManual();
-    }
-
-    public void bulkManual(){
         // Important Step 2: Get access to a list of Expansion Hub Modules to enable changing caching methods.
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-        for (LynxModule module : allHubs) {
+bulkManual(allHubs);
+    }
+
+    public void bulkManual(List<LynxModule> myHubs){
+
+        for (LynxModule module : myHubs) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
     }

@@ -72,7 +72,7 @@ public double posDif(double currPos, double endPos){
 
 public void setLiftPower(double power){ //sets power for both lift motors, not recommended.
         leftLift.setPower(Range.clip(power,-.25,1));
-        rightLift.setPower(Range.clip(power,-.25,1));
+        rightLift.setPower(Range.clip(power,-.25,1)); //-.45, -.15 unsucessful,
 }
 
 public void motorPower(DcMotor liftMotor, int goal)
@@ -84,6 +84,6 @@ public void motorPower(DcMotor liftMotor, int goal)
     //store these variables for the next loop
     lasterror = error;
     thentime = nowtime;
-    liftMotor.setPower(Range.clip(output,-.3,1));
+    liftMotor.setPower(Range.clip(output,-1,1));
 }
 }
