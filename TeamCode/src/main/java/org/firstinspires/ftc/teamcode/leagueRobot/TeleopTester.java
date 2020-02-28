@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.leagueRobot;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -71,6 +73,7 @@ public class TeleopTester extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         drive vroom = new drive(this,telemetry,hardwareMap);
         color see = new color(this,telemetry,hardwareMap);
         lift ellie = new lift(this,telemetry,hardwareMap);

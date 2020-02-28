@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.leagueRobot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,8 +13,10 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Disabled
+@Config
 public class drive
 {
+
     static final double COUNTS_PER_MOTOR_REV = 537.5;    // eg: Hex HD Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
@@ -23,7 +26,7 @@ public class drive
 
 
     //variables for taking the derivative of error
-    public static double lasterror;
+    public double lasterror;
     public double error;
     public double output;
     public double scaledoutput;
@@ -33,8 +36,8 @@ public class drive
     private ElapsedTime motortime = new ElapsedTime();
 
 
-    public double kPstrafe = .03;
-    public double kDstrafe = 0;
+    public static double kPstrafe = .03;
+    public static double kDstrafe = 0;
 
     public double strafeHeading = 0;
 
@@ -143,8 +146,8 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         // Ensure that the opmode is still active
 
     }
-    public double kPstrafeangle = 0.015;
-    public double kDstrafeangle = 0.006;
+    public static double kPstrafeangle = 0.015;
+    public static double kDstrafeangle = 0.006;
     public void driveY(double y, double speed, double time){ //check to see if this is the correct code
         double strafeHeading = gyro.getAngle();
         y = (int) y * COUNTS_PER_INCH;

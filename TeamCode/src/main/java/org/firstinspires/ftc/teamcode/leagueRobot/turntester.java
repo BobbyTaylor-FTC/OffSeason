@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.leagueRobot;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -38,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
 Start with the front color sensor inline with the middle of the first stone
  */
-@Disabled
+
 @Autonomous(name="turn 18 -18", group="Linear Opmode")
 
 public class turntester extends LinearOpMode {
@@ -48,7 +50,7 @@ public class turntester extends LinearOpMode {
         STATE_PARK,
         STATE_STOP,
     }
-
+public static int tester = 7;
     private ElapsedTime mStateTime = new ElapsedTime();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -61,6 +63,7 @@ public class turntester extends LinearOpMode {
     @Override
     public void runOpMode()
     {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         drive vroom = new drive(this, telemetry, hardwareMap);
         color see = new color(this, telemetry, hardwareMap);
         lift ellie = new lift(this, telemetry, hardwareMap);
@@ -91,11 +94,14 @@ public class turntester extends LinearOpMode {
                     break;
                 case STATE_PARK:
                     //vroom.turn(18,5);
-                    vroom.turn(-90,2);
+                    vroom.turn(28,5);
                     //vroom.turn(-18,5);
+                    telemetry.addData("Turn",runtime.seconds());
+                    telemetry.update();
                     newState(State.STATE_STOP);
                     break;
                 case STATE_STOP:
+
                     break;
             }
 
