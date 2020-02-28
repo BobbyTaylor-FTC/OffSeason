@@ -152,14 +152,22 @@ public class TeleopTester extends LinearOpMode
                 pince.release();
             }
 
-            if(gamepad2                                                                                            .b){
+            if(gamepad1.b){
+                vroom.turn(90,3);
+            }
+            if(gamepad1.x){
+                vroom.turn(17,3);
+            }
+
+            if(gamepad2.b) {
                 grabby.grabSkystone(0);
                 grabby.grabSkystone(1);
             }
-            else {
+            else{
                 grabby.releaseSkystone();
             }
             telemetry.addData("Loop time",loopTime.milliseconds());
+            telemetry.addData("degrees",gyro.getAngle());
                 //drive code
                     vroom.driveT(1);
 

@@ -12,8 +12,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@Disabled
 @Config
+@Disabled
+
 public class drive
 {
 
@@ -32,14 +33,33 @@ public class drive
     public double scaledoutput;
     public double nowtime, thentime;
 
+    double correction;
+    double avg = 0;
+    double cp;
+    double tp;
+
+
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime motortime = new ElapsedTime();
 
 
-    public static double kPstrafe = .03;
-    public static double kDstrafe = 0;
+    //for gyro strafing
+    public static double kPstrafeangle = 0.015;
+    public static double kDstrafeangle = 0.006;
+
+    //for gyro driving
+    public static double kPdriveangle = 0.010;
+    public static double kDdriveangle = 0.006;
+
+    //for turning
+    public static double kPturn = .036; //.03
+    public static double kDturn = 0.003;
+
+
+
 
     public double strafeHeading = 0;
+    public double currentheading;
 
     public int frontLefttarget, frontRighttarget,backRighttarget,backLefttarget;
 
@@ -113,74 +133,92 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         setPowerY(-percentSpeed);
     }
 
-
     public void driveX(double x, double speed, double time)
     {
+        currentheading = gyro.getAngle();
         x = (int) x * COUNTS_PER_INCH;
         frontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        frontLefttarget = (int) (frontLeft.getCurrentPosition() + x);
-        opModeObj.telemetry.addData("where I meant to be at", frontLefttarget);
+        tp = (int) (frontLeft.getCurrentPosition() + x);
+        //opModeObj.telemetry.addData("where I meant to be at", frontLefttarget);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motortime.reset();
+        while(posDif(avg,tp)>10&&motortime.seconds()<time){
+           avg = (Math.abs(frontLeft.getCurrentPosition())
+                   +Math.abs(frontRight.getCurrentPosition())
+                   +Math.abs(backLeft.getCurrentPosition())
+                   +Math.abs(backRight.getCurrentPosition())
+           )/4.0;
+           cp = avg/Math.abs(tp);
+            nowtime = runtime.seconds();
+            error = strafeHeading-gyro.getAngle();
+            output = kPdriveangle*error + kDdriveangle*(error-lasterror)/(nowtime-thentime);
+            //store these variables for the next loop
+            lasterror = error;
+            thentime = nowtime;
+           if(0<x){
+               frontLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
+               frontRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
+               backLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
+               backRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
+               this.opModeObj.telemetry.addData("error1st", error);
+               this.opModeObj.telemetry.addData("lasterror", lasterror);
+               this.opModeObj.telemetry.addData("output", Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
+               this.opModeObj.telemetry.update();
+          }
+           else{
+               frontLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
+               frontRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
+               backLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
+               backRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
+               this.opModeObj.telemetry.addData("error1st", error);
+               this.opModeObj.telemetry.addData("lasterror", lasterror);
+               this.opModeObj.telemetry.addData("output", Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.25,-1,1)+.2+output);
+               this.opModeObj.telemetry.update();
+           }
 
-        frontLeft.setTargetPosition(frontLefttarget);
-        frontRight.setTargetPosition(frontLefttarget);
-        backRight.setTargetPosition(frontLefttarget);
-        backLeft.setTargetPosition(frontLefttarget);
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        setPower(speed);
-        isBusy(time);
-        setPower(0);
-                frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+           if(Math.abs(avg)>Math.abs(tp)){
+               break;
+           }
 
-
-
-        // Ensure that the opmode is still active
-
+        }
+        setPowerX(0);
     }
-    public static double kPstrafeangle = 0.015;
-    public static double kDstrafeangle = 0.006;
-    public void driveY(double y, double speed, double time){ //check to see if this is the correct code
-        double strafeHeading = gyro.getAngle();
+
+    public void driveY(double y, double speed, double time)
+    {
+        currentheading = gyro.getAngle();
         y = (int) y * COUNTS_PER_INCH;
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         frontLefttarget = (int) (frontLeft.getCurrentPosition() + y);
         frontRighttarget = (int) (frontRight.getCurrentPosition() - y);
         backRighttarget = (int) (backRight.getCurrentPosition() + y);
         backLefttarget = (int) (backLeft.getCurrentPosition() - y);
-
-        frontLeft.setTargetPosition(frontLefttarget);
-        frontRight.setTargetPosition(frontRighttarget);
-        backRight.setTargetPosition(backRighttarget);
-        backLeft.setTargetPosition(backLefttarget);
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        setPower(speed);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        tp = Math.abs(backLefttarget);
         motortime.reset();
-        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&(motortime.seconds()<time))
-        {
+        while(posDif(avg,tp)>10&&motortime.seconds()<time){
+            avg = (Math.abs(frontLeft.getCurrentPosition())
+                    +Math.abs(frontRight.getCurrentPosition())
+                    +Math.abs(backLeft.getCurrentPosition())
+                    +Math.abs(backRight.getCurrentPosition())
+            )/4.0;
+            cp = avg/Math.abs(tp);
             nowtime = runtime.seconds();
             error = strafeHeading-gyro.getAngle();
             output = kPstrafeangle*error + kDstrafeangle*(error-lasterror)/(nowtime-thentime);
-            Range.clip(output,-.4,.4);
-            frontLeft.setPower(speed+output);
-            frontRight.setPower(speed+output);
-            backLeft.setPower((speed-output));
-            backRight.setPower((speed-output));
-
             //store these variables for the next loop
             lasterror = error;
             thentime = nowtime;
@@ -188,27 +226,37 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
             this.opModeObj.telemetry.addData("lasterror", lasterror);
             this.opModeObj.telemetry.addData("output", output);
             this.opModeObj.telemetry.update();
-        }
-        setPower(0);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turn(error,1);
-        this.opModeObj.telemetry.addData("loop","complete");
-        this.opModeObj.telemetry.update();
-    }
-                /*
+            if(y<0){
+                frontLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
+                frontRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
+                backLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
+                backRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
+            }
+            else{
+                frontLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
+                frontRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
+                backLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
+                backRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
+            }
+            if(Math.abs(avg)>Math.abs(tp)){
+                break;
+            }
             this.opModeObj.telemetry.addData("Goal",frontLefttarget);
             this.opModeObj.telemetry.addData("Where I at fL", frontLeft.getCurrentPosition());
-           this.opModeObj.telemetry.addData("How fast?", frontLeft.getPower());
-           this.opModeObj.telemetry.addData("Where I at fR", frontRight.getCurrentPosition());
-           this.opModeObj.telemetry.addData("How fast?", frontRight.getPower());
-           this.opModeObj.telemetry.addData("Where I at bL", backLeft.getCurrentPosition());
-           this.opModeObj.telemetry.addData("How fast?", backLeft.getPower());
-           this.opModeObj.telemetry.addData("Where I at bR", backRight.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast?", frontLeft.getPower());
+            this.opModeObj.telemetry.addData("Where I at fR", frontRight.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast?", frontRight.getPower());
+            this.opModeObj.telemetry.addData("Where I at bL", backLeft.getCurrentPosition());
+            this.opModeObj.telemetry.addData("How fast?", backLeft.getPower());
+            this.opModeObj.telemetry.addData("Where I at bR", backRight.getCurrentPosition());
             this.opModeObj.telemetry.addData("How fast BR?", backRight.getPower());
-             */
+
+        }
+        setPowerX(0);
+    }
+
+
+
 
 
     public void setPower(double speed)
@@ -239,8 +287,6 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         backLeft.setPower(speed);
     }
 
-    public double kPturn = .036; //.03
-    public double kDturn = 0.003;
     public void turn(double degrees,double wait) {
         double startHeading = gyro.getAngle();
         motortime.reset();
@@ -284,18 +330,6 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         }
         setPowerT(0);
         opModeObj.telemetry.addData("Turn","Completed");
-    }
-    public void strafeToSkystone(){
-        while(scope.range()>1){
-            nowtime = runtime.seconds();
-            error = 30-scope.range();
-            double output = kPstrafe*error + kDstrafe*(error-lasterror)/(nowtime-thentime);
-            //gyroStrafeTele(output);
-            //store these variables for the next loop
-            lasterror = error;
-            thentime = nowtime;
-        }
-
     }
 
     public void isBusy(double time)
@@ -514,5 +548,107 @@ this.opModeObj.telemetry.update();
         //store these variables for the next loop
         lasterror = error;
         thentime = nowtime;
+    }
+
+    public void driveY(double y, double speed, double time){ //check to see if this is the correct code
+        double strafeHeading = gyro.getAngle();
+        y = (int) y * COUNTS_PER_INCH;
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLefttarget = (int) (frontLeft.getCurrentPosition() + y);
+        frontRighttarget = (int) (frontRight.getCurrentPosition() - y);
+        backRighttarget = (int) (backRight.getCurrentPosition() + y);
+        backLefttarget = (int) (backLeft.getCurrentPosition() - y);
+
+        frontLeft.setTargetPosition(frontLefttarget);
+        frontRight.setTargetPosition(frontRighttarget);
+        backRight.setTargetPosition(backRighttarget);
+        backLeft.setTargetPosition(backLefttarget);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        setPower(speed);
+        motortime.reset();
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&(motortime.seconds()<time))
+        {
+            nowtime = runtime.seconds();
+            error = strafeHeading-gyro.getAngle();
+            output = kPstrafeangle*error + kDstrafeangle*(error-lasterror)/(nowtime-thentime);
+            Range.clip(output,-.4,.4);
+            frontLeft.setPower(speed+output);
+            frontRight.setPower(speed+output);
+            backLeft.setPower((speed-output));
+            backRight.setPower((speed-output));
+
+            //store these variables for the next loop
+            lasterror = error;
+            thentime = nowtime;
+            this.opModeObj.telemetry.addData("error", error);
+            this.opModeObj.telemetry.addData("lasterror", lasterror);
+            this.opModeObj.telemetry.addData("output", output);
+            this.opModeObj.telemetry.update();
+        }
+        setPower(0);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turn(error,1);
+        this.opModeObj.telemetry.addData("loop","complete");
+        this.opModeObj.telemetry.update();
+    }
+
+    public void driveY(double y, double speed, double time){ //check to see if this is the correct code
+        double strafeHeading = gyro.getAngle();
+        y = (int) y * COUNTS_PER_INCH;
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLefttarget = (int) (frontLeft.getCurrentPosition() + y);
+        frontRighttarget = (int) (frontRight.getCurrentPosition() - y);
+        backRighttarget = (int) (backRight.getCurrentPosition() + y);
+        backLefttarget = (int) (backLeft.getCurrentPosition() - y);
+
+        frontLeft.setTargetPosition(frontLefttarget);
+        frontRight.setTargetPosition(frontRighttarget);
+        backRight.setTargetPosition(backRighttarget);
+        backLeft.setTargetPosition(backLefttarget);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        setPower(speed);
+        motortime.reset();
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&(motortime.seconds()<time))
+        {
+            nowtime = runtime.seconds();
+            error = strafeHeading-gyro.getAngle();
+            output = kPstrafeangle*error + kDstrafeangle*(error-lasterror)/(nowtime-thentime);
+            Range.clip(output,-.4,.4);
+            frontLeft.setPower(speed+output);
+            frontRight.setPower(speed+output);
+            backLeft.setPower((speed-output));
+            backRight.setPower((speed-output));
+
+            //store these variables for the next loop
+            lasterror = error;
+            thentime = nowtime;
+            this.opModeObj.telemetry.addData("error", error);
+            this.opModeObj.telemetry.addData("lasterror", lasterror);
+            this.opModeObj.telemetry.addData("output", output);
+            this.opModeObj.telemetry.update();
+        }
+        setPower(0);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turn(error,1);
+        this.opModeObj.telemetry.addData("loop","complete");
+        this.opModeObj.telemetry.update();
     }
 */
