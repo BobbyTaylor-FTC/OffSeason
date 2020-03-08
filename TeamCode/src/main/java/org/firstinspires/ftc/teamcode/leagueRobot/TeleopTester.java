@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 
 /**
@@ -62,11 +63,12 @@ public class TeleopTester extends LinearOpMode
     boolean grabStone = false;
 
     boolean shouldHoldHeight = false;
+    boolean actionTaken = false;
 
     int holdPosition;
 
-    public DcMotor leftLift = null;
-    public DcMotor rightLift = null;
+    public DcMotorEx leftLift = null;
+    public DcMotorEx rightLift = null;
 
 
 
@@ -105,7 +107,7 @@ public class TeleopTester extends LinearOpMode
 
             loopTime.reset();
 //lift code
-            if(lastLoop.milliseconds()>170){
+            if(lastLoop.milliseconds()>140){
                 if(gamepad2.dpad_up){
                     if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
                         liftLocation++;
@@ -113,21 +115,25 @@ public class TeleopTester extends LinearOpMode
                     }
                     shouldLiftMove = true;
                     shouldHoldHeight = false;
+                    actionTaken = true;
                 }
                 else if(gamepad2.dpad_down){
                     if(liftLocation>0){ //makes sure that the lift cannot get into a negative position which would likely break the lift
                         liftLocation--;
                         telemetry.addData("Going down", "");
                     }
+                    actionTaken = true;
                 }
                 else if(gamepad2.dpad_right){
                     liftLocation = ellie.maxHeight; //replace with max lift position
                     telemetry.addData("Max height", "");
+                    actionTaken = true;
                 }
                 else if(gamepad2.dpad_left){
                     liftLocation = 0; //min lift position
 
                     telemetry.addData("Min height", "");
+                    actionTaken = true;
                 }
                 if(gamepad2.a&&grabFound){
                     pull.releaseFound();
@@ -137,7 +143,11 @@ public class TeleopTester extends LinearOpMode
                     pull.grabFound();
                     grabFound = true;
                 }
-                lastLoop.reset();
+                if(actionTaken == true)
+                {
+                    actionTaken = false;
+                    lastLoop.reset();
+                }
             }
 
                     ellie.liftMove(liftLocation);
@@ -166,8 +176,8 @@ public class TeleopTester extends LinearOpMode
             else{
                 grabby.releaseSkystone();
             }
-            telemetry.addData("Loop time",loopTime.milliseconds());
-            telemetry.addData("degrees",gyro.getAngle());
+            //telemetry.addData("Loop time",loopTime.milliseconds());
+            //telemetry.addData("degrees",gyro.getAngle());
                 //drive code
                     vroom.driveT(1);
 
@@ -182,6 +192,11 @@ public class TeleopTester extends LinearOpMode
                 telemetry.addData("Grab foundation?", grabFound);
                  */
 
+
+            telemetry.addData("left voltage", leftLift.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("right voltage", rightLift.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("left position", leftLift.getCurrentPosition());
+            telemetry.addData("right position", rightLift.getCurrentPosition());
 
             telemetry.update();
             }

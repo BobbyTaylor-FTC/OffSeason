@@ -161,21 +161,22 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
             //store these variables for the next loop
             lasterror = error;
             thentime = nowtime;
+           // output = 0;
            if(0<x){
-               frontLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
-               frontRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
-               backLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
-               backRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
+               frontLeft.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
+               frontRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
+               backLeft.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
+               backRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
                this.opModeObj.telemetry.addData("error1st", error);
                this.opModeObj.telemetry.addData("lasterror", lasterror);
-               this.opModeObj.telemetry.addData("output", Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
+               this.opModeObj.telemetry.addData("output", speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
                this.opModeObj.telemetry.update();
           }
            else{
-               frontLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
-               frontRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
-               backLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
-               backRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
+               frontLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
+               frontRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+               backLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
+               backRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
                this.opModeObj.telemetry.addData("error1st", error);
                this.opModeObj.telemetry.addData("lasterror", lasterror);
                this.opModeObj.telemetry.addData("output", Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.25,-1,1)+.2+output);
@@ -219,6 +220,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
             nowtime = runtime.seconds();
             error = strafeHeading-gyro.getAngle();
             output = kPstrafeangle*error + kDstrafeangle*(error-lasterror)/(nowtime-thentime);
+            //output = 0;
             //store these variables for the next loop
             lasterror = error;
             thentime = nowtime;
@@ -227,16 +229,16 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
             this.opModeObj.telemetry.addData("output", output);
             this.opModeObj.telemetry.update();
             if(y<0){
-                frontLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
-                frontRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output);
-                backLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
-                backRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output);
+                frontLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
+                frontRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
+                backLeft.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
+                backRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
             }
             else{
-                frontLeft.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
-                frontRight.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output);
-                backLeft.setPower(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
-                backRight.setPower(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output);
+                frontLeft.setPower((speed*Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+                frontRight.setPower(speed*-(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+                backLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
+                backRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
             }
             if(Math.abs(avg)>Math.abs(tp)){
                 break;

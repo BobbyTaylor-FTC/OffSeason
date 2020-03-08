@@ -22,12 +22,12 @@ public class claw
 
     }
     public void close(){
-        rightClaw.setPosition(1);
-        leftClaw.setPosition(.5);
+        rightClaw.setPosition(.833333);  //1
+        leftClaw.setPosition(.63666667); //.5
     }
     public void release(){
-        rightClaw.setPosition(.5);
-        leftClaw.setPosition(1);
+        rightClaw.setPosition(.5); //.5
+        leftClaw.setPosition(1); //1
     }
 
 
