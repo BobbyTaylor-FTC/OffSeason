@@ -104,7 +104,7 @@ public class TeleopTester extends LinearOpMode
         loopTime.reset();
         while (opModeIsActive())
         {
-
+    reader.bulkManualClear();
             loopTime.reset();
 //lift code
             if(lastLoop.milliseconds()>140){

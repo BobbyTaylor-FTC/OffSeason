@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.leagueRobot;
+package org.firstinspires.ftc.teamcode.OffSeason;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 @Disabled
 
-public class drive
+public class driver
 {
 
     static final double COUNTS_PER_MOTOR_REV = 537.5;    // eg: Hex HD Motor Encoder
@@ -72,29 +72,29 @@ public class drive
     public range scope;
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
-public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
-    opModeObj = opmode;
-    frontLeft  = hardwareMap.get(DcMotorEx.class,"front_left");
-    frontRight = hardwareMap.get(DcMotorEx.class,"front_right");
-    backLeft    =hardwareMap.get(DcMotorEx.class,"back_left");
-    backRight    = hardwareMap.get(DcMotorEx.class,"back_right");
-    frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    backRight.setDirection(DcMotorEx.Direction.REVERSE);
-    frontRight.setDirection(DcMotorEx.Direction.REVERSE);
-    frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-    frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-    backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-    backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-    // Set all motors to zero power
-    frontLeft.setPower(0);
-    frontRight.setPower(0);
-    backLeft.setPower(0);
-    backRight.setPower(0);
-    gyro = new revIMU(opModeObj,telemetry,hardwareMap);
-    scope = new range(opModeObj,telemetry,hardwareMap);
+    public driver(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
+        opModeObj = opmode;
+        frontLeft  = hardwareMap.get(DcMotorEx.class,"front_left");
+        frontRight = hardwareMap.get(DcMotorEx.class,"front_right");
+        backLeft    =hardwareMap.get(DcMotorEx.class,"back_left");
+        backRight    = hardwareMap.get(DcMotorEx.class,"back_right");
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRight.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
+        frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        // Set all motors to zero power
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        gyro = new revIMU(opModeObj,telemetry,hardwareMap);
+        scope = new range(opModeObj,telemetry,hardwareMap);
 
     }
 
@@ -113,11 +113,11 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         max = Math.max(max, Math.abs(rfP));
         max = Math.max(max, Math.abs(rbP));
 
-            frontLeft.setPower(lfP * percentSpeed); // set powers
-            backLeft.setPower(lbP * percentSpeed);
-            frontRight.setPower(rfP * percentSpeed);
-            backRight.setPower(rbP * percentSpeed);
-          //  strafeHeading = gyro.getAngle();
+        frontLeft.setPower(lfP * percentSpeed); // set powers
+        backLeft.setPower(lbP * percentSpeed);
+        frontRight.setPower(rfP * percentSpeed);
+        backRight.setPower(rbP * percentSpeed);
+        //  strafeHeading = gyro.getAngle();
 
     }
     public void strafeLeftT(double percentSpeed){
@@ -143,44 +143,44 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motortime.reset();
         while(posDif(avg,tp)>10&&motortime.seconds()<time){
-           avg = (Math.abs(frontLeft.getCurrentPosition())
-                   +Math.abs(frontRight.getCurrentPosition())
-                   +Math.abs(backLeft.getCurrentPosition())
-                   +Math.abs(backRight.getCurrentPosition())
-           )/4.0;
-           cp = avg/Math.abs(tp);
+            avg = (Math.abs(frontLeft.getCurrentPosition())
+                    +Math.abs(frontRight.getCurrentPosition())
+                    +Math.abs(backLeft.getCurrentPosition())
+                    +Math.abs(backRight.getCurrentPosition())
+            )/4.0;
+            cp = avg/Math.abs(tp);
             nowtime = runtime.seconds();
             error = strafeHeading-gyro.getAngle();
             output = kPdriveangle*error + kDdriveangle*(error-lasterror)/(nowtime-thentime);
             //store these variables for the next loop
             lasterror = error;
             thentime = nowtime;
-           // output = 0;
-           if(0<x){
-               frontLeft.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
-               frontRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
-               backLeft.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
-               backRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
-               this.opModeObj.telemetry.addData("error1st", error);
-               this.opModeObj.telemetry.addData("lasterror", lasterror);
-               this.opModeObj.telemetry.addData("output", speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
-               this.opModeObj.telemetry.update();
-          }
-           else{
-               frontLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
-               frontRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
-               backLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
-               backRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
-               this.opModeObj.telemetry.addData("error1st", error);
-               this.opModeObj.telemetry.addData("lasterror", lasterror);
-               this.opModeObj.telemetry.addData("output", Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.25,-1,1)+.2+output);
-               this.opModeObj.telemetry.update();
-           }
+            // output = 0;
+            if(0<x){
+                frontLeft.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
+                frontRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
+                backLeft.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
+                backRight.setPower(speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2-output));
+                this.opModeObj.telemetry.addData("error1st", error);
+                this.opModeObj.telemetry.addData("lasterror", lasterror);
+                this.opModeObj.telemetry.addData("output", speed*(Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)+.2+output));
+                this.opModeObj.telemetry.update();
+            }
+            else{
+                frontLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+                frontRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
+                backLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+                backRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
+                this.opModeObj.telemetry.addData("error1st", error);
+                this.opModeObj.telemetry.addData("lasterror", lasterror);
+                this.opModeObj.telemetry.addData("output", Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.25,-1,1)+.2+output);
+                this.opModeObj.telemetry.update();
+            }
 
 
-           if(Math.abs(avg)>Math.abs(tp)){
-               break;
-           }
+            if(Math.abs(avg)>Math.abs(tp)){
+                break;
+            }
 
         }
         setPowerX(0);
