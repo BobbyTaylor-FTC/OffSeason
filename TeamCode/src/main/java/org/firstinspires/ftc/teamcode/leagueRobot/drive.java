@@ -99,7 +99,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
     }
 
     public void driveT(double percentSpeed){
-        double drive = -.7*this.opModeObj.gamepad1.left_stick_y; // inputs
+        double drive = -this.opModeObj.gamepad1.left_stick_y; // inputs
         double strafe = -this.opModeObj.gamepad1.left_stick_x;
         double turn = .7*this.opModeObj.gamepad1.right_stick_x;
 
@@ -112,19 +112,13 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         max = Math.max(max, Math.abs(lbP));
         max = Math.max(max, Math.abs(rfP));
         max = Math.max(max, Math.abs(rbP));
-        if(this.opModeObj.gamepad1.left_bumper){
-            strafeLeftT(1);
-        }
-        else if(this.opModeObj.gamepad1.right_bumper){
-            strafeRightT(1);
-        }
-        else{
+
             frontLeft.setPower(lfP * percentSpeed); // set powers
             backLeft.setPower(lbP * percentSpeed);
             frontRight.setPower(rfP * percentSpeed);
             backRight.setPower(rbP * percentSpeed);
           //  strafeHeading = gyro.getAngle();
-        }
+
     }
     public void strafeLeftT(double percentSpeed){
         setPowerY(percentSpeed);
@@ -173,10 +167,10 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
                this.opModeObj.telemetry.update();
           }
            else{
-               frontLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
-               frontRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
-               backLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
-               backRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+               frontLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+               frontRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
+               backLeft.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2+output));
+               backRight.setPower(speed*(-Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.5,-1,1)-.2-output));
                this.opModeObj.telemetry.addData("error1st", error);
                this.opModeObj.telemetry.addData("lasterror", lasterror);
                this.opModeObj.telemetry.addData("output", Range.clip((-Math.abs(0.25 * ((cp*10)-5)))+1.25,-1,1)+.2+output);
@@ -190,6 +184,9 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
 
         }
         setPowerX(0);
+        delay(.06);
+        turnto(currentheading,.4);
+        delay(.06);
     }
 
     public void driveY(double y, double speed, double time)
@@ -255,6 +252,9 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
 
         }
         setPowerX(0);
+        delay(.06);
+        turnto(currentheading,.4);
+        delay(.06);
     }
 
 
@@ -310,6 +310,7 @@ public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
         }
         setPowerT(0);
         opModeObj.telemetry.addData("Turn","Completed");
+        delay(.06);
     }
     public void turnto(double degrees,double wait) {
         double startHeading = gyro.getAngle();
