@@ -27,19 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.leagueRobot;
+package org.firstinspires.ftc.teamcode.OffSeason;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 
 /**
@@ -76,127 +71,19 @@ public class TeleopTester extends LinearOpMode
     public void runOpMode()
     {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        drive vroom = new drive(this,telemetry,hardwareMap);
-        color see = new color(this,telemetry,hardwareMap);
-        lift ellie = new lift(this,telemetry,hardwareMap);
+        Odometry missile = new Odometry(this,telemetry,hardwareMap);
         revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-        found pull = new found(this,telemetry,hardwareMap);
-        grabber grabby = new grabber(this,telemetry,hardwareMap);
-        range scope = new range(this,telemetry,hardwareMap);
-        claw pince = new claw(this,telemetry,hardwareMap);
+        MoveToPoint forwards = new MoveToPoint(missile);
+        drive vroom = new drive(this,telemetry,hardwareMap, missile, forwards, gyro);
         bulk reader = new bulk(this,telemetry,hardwareMap);
-        leftLift = hardwareMap.get(DcMotorEx.class,"left_lift");
-        rightLift = hardwareMap.get(DcMotorEx.class,"right_lift");
-        leftLift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightLift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        leftLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightLift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftLift.setDirection(DcMotorEx.Direction.REVERSE);
-        leftLift.setPower(0);
-        rightLift.setPower(0);
-        int liftLocation = 0; //height of lift: 0 = ground, 1 = first stone, 2 = second stone, 3 = third stone, 4 = fourth stone 5 = fifth stone or capstone
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
         runtime.reset();
-        lastLoop.reset();
-        loopTime.reset();
         while (opModeIsActive())
         {
     reader.bulkManualClear();
             loopTime.reset();
-//lift code
-            if(lastLoop.milliseconds()>140){
-                if(gamepad2.dpad_up){
-                    if(liftLocation<ellie.maxHeight){ //makes sure that the lift cannot get past the maximum height which would likely break the lift
-                        liftLocation++;
-                        telemetry.addData("Going up", "");
-                    }
-                    shouldLiftMove = true;
-                    shouldHoldHeight = false;
-                    actionTaken = true;
-                }
-                else if(gamepad2.dpad_down){
-                    if(liftLocation>0){ //makes sure that the lift cannot get into a negative position which would likely break the lift
-                        liftLocation--;
-                        telemetry.addData("Going down", "");
-                    }
-                    actionTaken = true;
-                }
-                else if(gamepad2.dpad_right){
-                    liftLocation = ellie.maxHeight; //replace with max lift position
-                    telemetry.addData("Max height", "");
-                    actionTaken = true;
-                }
-                else if(gamepad2.dpad_left){
-                    liftLocation = 0; //min lift position
-
-                    telemetry.addData("Min height", "");
-                    actionTaken = true;
-                }
-                if(gamepad2.a&&grabFound){
-                    pull.releaseFound();
-                    grabFound = false;
-                }
-                else if(gamepad2.a){
-                    pull.grabFound();
-                    grabFound = true;
-                }
-                if(actionTaken == true)
-                {
-                    actionTaken = false;
-                    lastLoop.reset();
-                }
-            }
-
-                    ellie.liftMove(liftLocation);
-                    telemetry.addData("Lift moving to", liftLocation);
-
-
-            if(gamepad2.y){
-                pince.close();
-                grabStone = false;
-            }
-            else{
-                pince.release();
-            }
-
-            if(gamepad1.b){
-                vroom.turn(90,3);
-            }
-            if(gamepad1.x){
-                vroom.turn(17,3);
-            }
-
-            if(gamepad2.b) {
-                grabby.grabSkystone(0);
-                grabby.grabSkystone(1);
-            }
-            else{
-                grabby.releaseSkystone();
-            }
-            //telemetry.addData("Loop time",loopTime.milliseconds());
-            //telemetry.addData("degrees",gyro.getAngle());
-                //drive code
-                    vroom.driveT(1);
-
-                /*
-                telemetry.addData("Lift Left encoders: ",leftLift.getCurrentPosition());
-                telemetry.addData("Lift Left power: ",leftLift.getPower());
-                telemetry.addData("Lift Right encoders: ",rightLift.getCurrentPosition());
-                telemetry.addData("Lift Right power: ",rightLift.getPower());
-            telemetry.addData("Left direction: ",leftLift.getDirection());
-            telemetry.addData("Right direction ",rightLift.getDirection());
-                telemetry.addData("Grab stone?", grabStone);
-                telemetry.addData("Grab foundation?", grabFound);
-                 */
-
-
-            telemetry.addData("left voltage", leftLift.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("right voltage", rightLift.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("left position", leftLift.getCurrentPosition());
-            telemetry.addData("right position", rightLift.getCurrentPosition());
 
             telemetry.update();
             }

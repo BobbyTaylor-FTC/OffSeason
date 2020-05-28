@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.leagueRobot;
+package org.firstinspires.ftc.teamcode.OffSeason;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -71,12 +71,7 @@ public class BlankSM extends LinearOpMode {
     public void runOpMode()
     {
         drive vroom = new drive(this, telemetry, hardwareMap);
-        color see = new color(this, telemetry, hardwareMap);
-        lift ellie = new lift(this, telemetry, hardwareMap);
         revIMU gyro = new revIMU(this, telemetry, hardwareMap);
-        found pull = new found(this, telemetry, hardwareMap);
-        grabber grabby = new grabber(this, telemetry, hardwareMap);
-        range scope = new range(this, telemetry, hardwareMap);
         bulk reader = new bulk(this,telemetry,hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
