@@ -36,9 +36,20 @@ public class Odometry {
     double globalPositionY = 0;
     double globalPositionTheta = 0;
 
+    double xChange;
+    double yChange;
+
     double perpMovement = 0;
     double fwdMovement = 0;
     double deltaTheta = 0;
+
+    double sinTerm;
+    double cosTerm;
+
+    double drive, strafe;
+
+    double cTerm, sTerm;
+
 
     public static double trackwidth = 16;
     public static double thetaConstant = .5;
@@ -79,17 +90,40 @@ public class Odometry {
         perpMovement = strafeWheelDelta-thetaConstant*deltaTheta;
         fwdMovement = (leftWheelDelta+rightWheelDelta)/2.0;
 
+
+
+        //update theta AFTER rotation matrix has been multiplied in
+        globalPositionTheta = (leftWheelTotal-rightWheelTotal)/trackwidth;
+
+        if(deltaTheta <pow(10,-6)){
+            sinTerm = 1-(deltaTheta*deltaTheta)/6;
+            cosTerm = deltaTheta/2.0;
+        }
+        else{
+            sinTerm = sin(deltaTheta)/deltaTheta;
+            cosTerm = (1-cos(deltaTheta))/deltaTheta;
+        }
+        strafe = cosTerm*fwdMovement + sinTerm* perpMovement;
+        drive = sinTerm*fwdMovement - cosTerm*perpMovement;
+
+        cTerm = cos(globalPositionTheta);
+        sTerm = sin(globalPositionTheta);
+
+        globalPositionY += drive*cTerm-strafe*sTerm;
+        globalPositionX += drive*sTerm+strafe*cTerm;
+
+        /*
         //product of the rotation matrix and the [x,y] matrices
         globalPositionX+=fwdMovement*cos(globalPositionTheta)-perpMovement*sin(globalPositionTheta);
         globalPositionY+=fwdMovement*sin(globalPositionTheta)+perpMovement*cos(globalPositionTheta);
+        */
 
         //storing deadwheel encoder values for future use
         leftDeadWheelPrev = leftDeadWheelCurrent;
         rightDeadWheelPrev = rightDeadWheelCurrent;
         strafeDeadWheelPrev = strafeDeadWheelCurrent;
 
-        //update theta AFTER rotation matrix has been multiplied in
-        globalPositionTheta = (leftWheelTotal-rightWheelTotal)/trackwidth;
+
 
         opModeObj.telemetry.addData("Current X:", getGlobalPositionX());
         opModeObj.telemetry.addData("Current Y:", getGlobalPositionY());
