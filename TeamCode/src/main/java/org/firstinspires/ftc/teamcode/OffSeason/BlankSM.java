@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.OffSeason;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -70,7 +72,11 @@ public class BlankSM extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        drive vroom = new drive(this, telemetry, hardwareMap);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        Odometry missile = new Odometry(this,telemetry,hardwareMap);
+        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
+        MoveToPoint forwards = new MoveToPoint(missile, this, telemetry, hardwareMap);
+        drive vroom = new drive(this,telemetry,hardwareMap, missile, forwards, gyro);
         revIMU gyro = new revIMU(this, telemetry, hardwareMap);
         bulk reader = new bulk(this,telemetry,hardwareMap);
         telemetry.addData("Status", "Initialized");

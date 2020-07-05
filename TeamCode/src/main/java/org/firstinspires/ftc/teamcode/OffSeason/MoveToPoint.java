@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.OffSeason;
-import android.graphics.Point;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
-
+import org.firstinspires.ftc.teamcode.OffSeason.Point.*;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.lang.reflect.Array;

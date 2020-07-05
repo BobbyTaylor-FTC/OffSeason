@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.OffSeason;
 
-import android.graphics.Point;
+import org.firstinspires.ftc.teamcode.OffSeason.Point.*;
 
 public class CurvePoint {
     public double x;
