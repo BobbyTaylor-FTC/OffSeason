@@ -96,6 +96,7 @@ public class Odometry {
         opModeObj.telemetry.addData("Current theta:", getGlobalPositionTheta());
 
     }
+    
     public double getGlobalPositionX() {
         return globalPositionX;
     }
