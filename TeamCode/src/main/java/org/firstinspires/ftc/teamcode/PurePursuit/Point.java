@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.OffSeason;
-
-import org.opencv.core.Rect;
+package org.firstinspires.ftc.teamcode.PurePursuit;
 
 public class Point {
 

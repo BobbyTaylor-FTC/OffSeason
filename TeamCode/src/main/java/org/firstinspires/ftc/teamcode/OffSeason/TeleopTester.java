@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.PurePursuit.MoveToPoint;
+
 
 /**
 Start with the front color sensor inline with the middle of the first stone
