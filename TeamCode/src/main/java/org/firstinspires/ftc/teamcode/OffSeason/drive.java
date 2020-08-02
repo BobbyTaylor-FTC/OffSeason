@@ -6,9 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import static java.lang.Math.*;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.PurePursuit.MoveToPoint;
+import org.firstinspires.ftc.teamcode.geometry.Vector2d;
 
 @Config
 @Disabled
@@ -38,7 +39,6 @@ public class drive
 
 
     private ElapsedTime runtime = new ElapsedTime();
-    private ElapsedTime motortime = new ElapsedTime();
 
 
     //for gyro strafing
@@ -68,17 +68,16 @@ public class drive
     public revIMU gyroObj;
     public Odometry missileObj;
     public MoveToPoint forwardsObj;
-    public HardwareMap hardwareMap;
-    public Telemetry telemetry;
-    public drive(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap, Odometry missile, MoveToPoint forwards, revIMU gyro){
-        opModeObj = opmode;
+    PIDMath translation;
+    PIDMath rotation;
+    public drive(LinearOpMode opMode, Odometry missile, revIMU gyro){
+        opModeObj = opMode;
         gyroObj = gyro;
         missileObj=missile;
-        forwardsObj = forwards;
-        frontLeft  = hardwareMap.get(DcMotorEx.class,"front_left");
-        frontRight = hardwareMap.get(DcMotorEx.class,"front_right");
-        backLeft = hardwareMap.get(DcMotorEx.class,"back_left");
-        backRight = hardwareMap.get(DcMotorEx.class,"back_right");
+        frontLeft  = opModeObj.hardwareMap.get(DcMotorEx.class,"front_left");
+        frontRight = opModeObj.hardwareMap.get(DcMotorEx.class,"front_right");
+        backLeft = opModeObj.hardwareMap.get(DcMotorEx.class,"back_left");
+        backRight = opModeObj.hardwareMap.get(DcMotorEx.class,"back_right");
         frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -94,14 +93,18 @@ public class drive
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-
+        translation = new PIDMath (.5,0,.5);
+        rotation = new PIDMath (.5,0,.5);
+        runtime.reset();
     }
 
     public void driveT(double percentSpeed){
-        double drive = -this.opModeObj.gamepad1.left_stick_y; // inputs
-        double strafe = -this.opModeObj.gamepad1.left_stick_x;
-        double turn = .7*this.opModeObj.gamepad1.right_stick_x;
-
+        double drive = -opModeObj.gamepad1.left_stick_y; // inputs, may require this.opModeObj.
+        double strafe = -opModeObj.gamepad1.left_stick_x;
+        double turn = opModeObj.gamepad1.right_stick_x;
+        dst(drive, strafe, turn);
+    }
+    public void dst(double drive, double strafe, double turn){
         double lfP = drive + strafe - turn; // determining wheel proportions
         double lbP = drive - strafe - turn;
         double rfP = drive - strafe + turn;
@@ -112,11 +115,78 @@ public class drive
         max = Math.max(max, Math.abs(rfP));
         max = Math.max(max, Math.abs(rbP));
 
-        frontLeft.setPower(lfP * percentSpeed); // set powers
-        backLeft.setPower(lbP * percentSpeed);
-        frontRight.setPower(rfP * percentSpeed);
-        backRight.setPower(rbP * percentSpeed);
-        //  strafeHeading = gyro.getAngle();
+        frontLeft.setPower(lfP); // set powers
+        backLeft.setPower(lbP);
+        frontRight.setPower(rfP);
+        backRight.setPower(rbP);
+        runtime.seconds();
+    }
+
+    public void driveT(double leftPower, double rightPower){
+        frontLeft.setPower(leftPower);
+        frontRight.setPower(rightPower);
+        backLeft.setPower(leftPower);
+        backRight.setPower(rightPower);
+    }
+
+    public void turnTo(double angle){
+        while(abs(error)>.5) {
+            double wrappingError = -360 - gyroObj.getAngle() + angle;
+            double straightError = gyroObj.getAngle() - angle;
+            if (abs(wrappingError) < abs(straightError)) {
+                error = -360 - gyroObj.getAngle() + angle;
+                error *= -1;
+            } else {
+                error = gyroObj.getAngle() - angle;
+            }
+            if (abs(error) > .5) {
+               double gain = rotation.calculateGain(error, runtime.milliseconds());
+               driveT(gain,-gain);
+            }
+            else{
+                break;
+            }
+        }
+        driveT(0,0);
+    }
+
+    /**
+     * Code from FTCLib
+     *
+     * @param leftStickX   horizontal of the left stick of the main gamepad
+     * @param leftStickY   vertical of the left stick of the main gamepad
+     * @param rightStickX  horizontal of the right stick of the main gamepad
+     * @param turnSpeed    how fast it turns
+     */
+
+    public void driveFieldCentric(double leftStickX, double leftStickY, double rightStickX, double turnSpeed){
+        Vector2d initial = new Vector2d(leftStickX,leftStickY);
+        initial.rotateBy(gyroObj.getAngle());
+        double theta = Math.atan2(leftStickX,leftStickY);
+        frontLeft.setPower(initial.magnitude() * Math.sin(theta + Math.PI / 4) + turnSpeed);
+        frontRight.setPower(initial.magnitude() * Math.sin(theta - Math.PI / 4) - turnSpeed);
+        backLeft.setPower(initial.magnitude() * Math.sin(theta - Math.PI / 4) + turnSpeed);
+        backRight.setPower(initial.magnitude() * Math.sin(theta + Math.PI / 4) - turnSpeed);
+
+    }
+
+    public void moveToPoint(double X, double Y, double theta){
+        double xGain = translation.calculateGain(missileObj.getGlobalPositionX()-X, runtime.seconds());
+        double yGain = translation.calculateGain(missileObj.getGlobalPositionY()-Y, runtime.seconds());
+
+        double wrappingError = -360 - gyroObj.getAngle() + theta;
+        double straightError = gyroObj.getAngle() - theta;
+        if (abs(wrappingError) < abs(straightError)) {
+            error = -360 - gyroObj.getAngle() + theta;
+            error *= -1;
+        } else {
+            error = gyroObj.getAngle() - theta;
+        }
+
+        double tGain = rotation.calculateGain(error, runtime.seconds());
+        double drive = xGain*cos(missileObj.getGlobalPositionTheta())-yGain*sin(missileObj.getGlobalPositionTheta());
+        double strafe = xGain*sin(missileObj.getGlobalPositionTheta())+yGain*cos(missileObj.getGlobalPositionTheta());
+        dst(drive, strafe, tGain);
 
     }
 

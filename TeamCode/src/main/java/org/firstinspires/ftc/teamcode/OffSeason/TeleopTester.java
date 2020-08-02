@@ -73,11 +73,10 @@ public class TeleopTester extends LinearOpMode
     public void runOpMode()
     {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Odometry missile = new Odometry(this,telemetry,hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-        MoveToPoint forwards = new MoveToPoint(missile, this, telemetry, hardwareMap);
-        drive vroom = new drive(this,telemetry,hardwareMap, missile, forwards, gyro);
-        bulk reader = new bulk(this,telemetry,hardwareMap);
+        Odometry missile = new Odometry(this);
+        revIMU gyro = new revIMU(this);
+        drive vroom = new drive(this, missile, gyro);
+        bulk reader = new bulk(this);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();

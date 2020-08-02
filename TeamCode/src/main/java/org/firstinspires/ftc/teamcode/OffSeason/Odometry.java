@@ -56,11 +56,11 @@ public class Odometry {
 
 
 
-    public Odometry(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap) {
+    public Odometry(LinearOpMode opmode) {
         opModeObj = opmode;
-        leftDeadWheel = hardwareMap.get(DcMotorEx.class, "left_Dead");
-        rightDeadWheel = hardwareMap.get(DcMotorEx.class, "right_Dead");
-        strafeDeadWheel = hardwareMap.get(DcMotorEx.class, "strafe_Dead");
+        leftDeadWheel = opModeObj.hardwareMap.get(DcMotorEx.class, "left_Dead");
+        rightDeadWheel = opModeObj.hardwareMap.get(DcMotorEx.class, "right_Dead");
+        strafeDeadWheel = opModeObj.hardwareMap.get(DcMotorEx.class, "strafe_Dead");
     }
 
     /**

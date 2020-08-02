@@ -18,9 +18,8 @@ public class revIMU
     LinearOpMode opModeObj;
     BNO055IMU imu;
 
-    public revIMU(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
-        opModeObj = opmode;
-        imu = hardwareMap.get(BNO055IMU.class,"imu");
+    public revIMU(LinearOpMode opmode){
+        imu = opmode.hardwareMap.get(BNO055IMU.class,"imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
        // parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -35,6 +34,7 @@ public class revIMU
     public double getAngle(){
         double heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         return heading;
+
     }
     public double posDif(double currPos, double endPos){
         return Math.abs(currPos-endPos);

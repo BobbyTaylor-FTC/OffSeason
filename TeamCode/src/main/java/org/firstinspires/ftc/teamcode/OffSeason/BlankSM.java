@@ -72,13 +72,8 @@ public class BlankSM extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Odometry missile = new Odometry(this,telemetry,hardwareMap);
-        revIMU gyro = new revIMU(this,telemetry,hardwareMap);
-        MoveToPoint forwards = new MoveToPoint(missile, this, telemetry, hardwareMap);
-        drive vroom = new drive(this,telemetry,hardwareMap, missile, forwards, gyro);
-        revIMU gyro = new revIMU(this, telemetry, hardwareMap);
-        bulk reader = new bulk(this,telemetry,hardwareMap);
+        subsystemGenerator subs = new subsystemGenerator(this);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();

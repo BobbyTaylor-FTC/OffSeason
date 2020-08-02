@@ -10,13 +10,11 @@ import java.util.List;
 
 public class bulk
 {
-    HardwareMap hardwareMap;
-    Telemetry telemetry;
     LinearOpMode opModeObj;
-    public bulk(LinearOpMode opmode, Telemetry telemetry, HardwareMap hardwareMap){
+    public bulk(LinearOpMode opmode){
         opModeObj = opmode;
         // Important Step 2: Get access to a list of Expansion Hub Modules to enable changing caching methods.
-        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+        List<LynxModule> allHubs =opModeObj.hardwareMap.getAll(LynxModule.class);
         bulkManual(allHubs);
     }
 
@@ -27,7 +25,7 @@ public class bulk
         }
     }
     public void bulkManualClear() {
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+        for (LynxModule module : opModeObj.hardwareMap.getAll(LynxModule.class)) {
             module.clearBulkCache();
         }
     }
