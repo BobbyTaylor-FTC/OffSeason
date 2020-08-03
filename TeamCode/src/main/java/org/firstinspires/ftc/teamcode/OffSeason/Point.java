@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.PurePursuit;
+package org.firstinspires.ftc.teamcode.OffSeason;
 
+import org.firstinspires.ftc.teamcode.geometry.Vector2d;
 public class Point {
 
     public double x, y;
@@ -26,6 +27,10 @@ public class Point {
             x = 0;
             y = 0;
         }
+    }
+
+    public Point plus(Vector2d other){
+        return new Point(x+other.getX(), y+other.getY());
     }
 
     public Point clone() {

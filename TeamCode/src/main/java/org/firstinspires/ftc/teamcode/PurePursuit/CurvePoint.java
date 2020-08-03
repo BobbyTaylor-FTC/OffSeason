@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.PurePursuit;
 
+import org.firstinspires.ftc.teamcode.OffSeason.Point;
+
 public class CurvePoint {
     public double x;
     public double y;
