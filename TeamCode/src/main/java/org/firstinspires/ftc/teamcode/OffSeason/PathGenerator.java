@@ -31,7 +31,7 @@ public class PathGenerator {
     }
 
     public void fillSmooth(){
-        smoother(filler(2),5,5,5);
+        filler(2);
     }
 
     public ArrayList<Point> filler(double spacing){
@@ -49,10 +49,12 @@ public class PathGenerator {
         filledPath.add(filledPath.get(filledPath.size()-1));
         return filledPath;
     }
-    public ArrayList<Point> smoother(){
+
+    public void smoother(){
       /*
       quintic splines go brr
        */
+      //return ArrayList<Point>;
     }
 
     public void reverseList(){
@@ -72,6 +74,7 @@ public class PathGenerator {
         for(int i = 0; i<tempRevList.size()-1; i++){
             origList.set(i, tempRevList.get(i));
         }
+        return origList;
     }
 
     public double distanceBetweenPoints(ArrayList<Point> givenArray, int pointIndex){
@@ -88,7 +91,7 @@ public class PathGenerator {
         if(one.x==two.x){
             one.x+=.00001;
         }
-        double k1 = 0.5*(Math.pow(one.x,2)+Math.pow(one.y,2)-Math.pow(two.x,2)-Math.pow(two.y,2)/(one.x-two.x);
+        double k1 = 0.5*(Math.pow(one.x,2)+Math.pow(one.y,2)-Math.pow(two.x,2)-Math.pow(two.y,2)/(one.x-two.x));
         double k2 = (one.y-two.y)/(one.x-two.x);
         double b = .5*(Math.pow(two.x,2)-2*two.x*k1+Math.pow(two.y,2)-Math.pow(three.x,2)+2*three.x*k1-Math.pow(three.y,2))/
                 (three.x*k2-three.y+two.y-two.x*k2);
@@ -108,7 +111,8 @@ public class PathGenerator {
             //Insert error handling code here
         }
         ArrayList<Double> targetVelo = new ArrayList<Double>();
-        double distance = distanceFormula(givenArray.get(givenArray.size()-1),givenArray.get(givenArray.size()-2));
+        double distance;
+        //double distance = distanceFormula(givenArray.get(givenArray.size()-1),givenArray.get(givenArray.size()-2));
         double oldTargetVelo = Math.min(maxPathVelo,kConstant/.0001);
         double newTargetVelo;
         targetVelo.add(oldTargetVelo);
@@ -116,8 +120,9 @@ public class PathGenerator {
             distance = distanceFormula(givenArray.get(givenArray.size()-i),givenArray.get(givenArray.size()-i-1));
             oldTargetVelo = Math.min(maxPathVelo,kConstant/curvatureBetweenPoints(givenArray.get(givenArray.size()-i),givenArray.get(givenArray.size()-i-1),givenArray.get(givenArray.size()-i-2)));
             newTargetVelo = Math.sqrt(Math.pow(targetVelo.get(i-1),2)+2*maxPathAccel*distance); //add rate limiter?
-            targetVelo.add(Math.min(oldTargetVelo,newTargetVelo);
+            targetVelo.add(Math.min(oldTargetVelo,newTargetVelo));
         }
+        return targetVelo;
     }
     public double distanceFormula(Point one, Point two){
         return Math.sqrt(Math.pow(two.x-one.x,2)+Math.pow(two.y-one.y,2));
