@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.OffSeason;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.geometry.Vector2d;
+@Disabled
 public class Point {
 
     public double x, y;
@@ -31,6 +34,10 @@ public class Point {
 
     public Point plus(Vector2d other){
         return new Point(x+other.getX(), y+other.getY());
+    }
+
+    public Vector2d minus(Point other){
+        return new Vector2d(x-other.x,y-other.y);
     }
 
     public Point clone() {

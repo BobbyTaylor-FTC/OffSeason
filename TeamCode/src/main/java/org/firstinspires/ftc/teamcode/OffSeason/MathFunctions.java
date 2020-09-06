@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.OffSeason;
 
-import static java.lang.Math.*;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import static java.lang.Math.*;
+@Disabled
 public class MathFunctions {
     public static double AngleWrap(double angle){
         while(angle<-PI){

@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.PurePursuit.MoveToPoint;
+
 
 
 /**
@@ -64,26 +64,56 @@ public class TeleopTester extends LinearOpMode
 
     int holdPosition;
 
-    public DcMotorEx leftLift = null;
-    public DcMotorEx rightLift = null;
+    private revIMU gyro;
+    private drive zoom;
+    private bulk reader;
+    private hood flippy;
+    private hardwareGenerator gen;
+    private Odometry odo;
 
-
+    public DcMotorEx frontLeft   = null;
+    public DcMotorEx frontRight  = null;
+    public DcMotorEx backLeft   = null;
+    public DcMotorEx backRight  = null;
+    public DcMotorEx flyWheel1   = null;
+    public DcMotorEx flyWheel2  = null;
 
     @Override
     public void runOpMode()
     {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+     /*
         Odometry missile = new Odometry(this);
         revIMU gyro = new revIMU(this);
         drive vroom = new drive(this, missile, gyro);
         bulk reader = new bulk(this);
+
+      */
+        subsystemGenerator subs = new subsystemGenerator(this);
+        gyro = subs.gyro;
+        zoom = subs.vroom;
+        reader = subs.reader;
+        flippy = subs.flipper;
+        gen = subs.support;
+        odo = subs.missile;
+        frontLeft = gen.frontLeft;
+        frontRight = gen.frontRight;
+        backLeft = gen.backLeft;
+        backRight = gen.backRight;
+        flyWheel1 = gen.flyWheel1;
+        flyWheel2 = gen.flyWheel2;
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
         runtime.reset();
         while (opModeIsActive())
         {
-    reader.bulkManualClear();
+            odo.UpdateGlobalPosition(frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition());
+            if(gamepad1.left_bumper){
+                flippy.upToSpeed(flippy.calculateWheelVelo(gen.flyWheel1.getVelocity()));
+            }
+
+            reader.bulkManualClear();
             loopTime.reset();
 
             telemetry.update();

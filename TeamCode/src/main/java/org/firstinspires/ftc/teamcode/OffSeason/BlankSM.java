@@ -36,7 +36,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.PurePursuit.MoveToPoint;
 
 
 /**
@@ -63,6 +62,12 @@ public class BlankSM extends LinearOpMode {
     private ElapsedTime mStateTime = new ElapsedTime();
     private ElapsedTime runtime = new ElapsedTime();
 
+    public revIMU gyro;
+    public drive zoom;
+    public bulk reader;
+    public Odometry odo;
+    public reader hardReader;
+
     private State mCurrentState; //Current State Machine State.
     public BlankSM(){
 
@@ -72,7 +77,20 @@ public class BlankSM extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        subsystemGenerator subs = new subsystemGenerator(this);
+        hardwareGenerator gen = new hardwareGenerator(this);
+        subsystemGenerator subs = new subsystemGenerator(this, gen);
+
+
+        zoom = subs.vroom;
+        gyro = subs.gyro;
+        odo = subs.missile;
+        hardReader = subs.hardReader;
+
+        PathGenerator park = new PathGenerator(this, odo, zoom);
+        park.addPoint(5, 5,5);
+        park.addPoint(1,0,10);
+        park.generatePath();
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -80,25 +98,27 @@ public class BlankSM extends LinearOpMode {
 
         runtime.reset();
         mStateTime.reset();
-        newState(State.STATE_INITIAL);  //newState(State.expample); changes state
+        newState(State.STATE_INITIAL);  //newState(State.example); changes state
 
         //Execute the current state. Each STATE's case code does the following:
         //1: Look for an EVENT that wil cause a STATE change
         //2: If an EVENT is found, take any required ACTION, an then set the next STATE else
         //3: If no EVENT is found, do processing for the current STATE and send TELEMETRY data for STATE
 
-
-        int skyStoneLocation = 0; //location of skystone; 0: 1st position, 1: 2nd position, 2: 3rd position
         while (!isStopRequested() && opModeIsActive())
         {
+            hardReader.autonRead();
+            odo.UpdateGlobalPosition(hardReader.leftDeadCur,hardReader.rightDeadCur, hardReader.strafeDeadCur);
             switch (mCurrentState)
             {
                 case STATE_INITIAL:
-                    newState(State.STATE_DRIVE_TO_STONE);
 
+                    if(park.runPath()) {
+                        newState(State.STATE_DRIVE_TO_STONE);
+                    }
                     break;
                 case STATE_DRIVE_TO_STONE:
-
+                    newState(State.STATE_LOCATE_STONE);
                     break;
                 case STATE_LOCATE_STONE:
 
